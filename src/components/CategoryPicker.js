@@ -1,24 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RECEIPT_CATEGORIES } from '../constants/categories';
+import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 
-const CATEGORIES = ['Gas', 'Food', 'Parking', 'Maintenance', 'Supplies', 'Other'];
-
-/**
- * Category picker component.
- */
 export default function CategoryPicker({ value, onChange }) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Category</Text>
       <View style={styles.row}>
-        {CATEGORIES.map((cat) => (
+        {RECEIPT_CATEGORIES.map((cat) => (
           <TouchableOpacity
-            key={cat}
-            style={[styles.chip, value === cat && styles.active]}
-            onPress={() => onChange(cat)}
+            key={cat.key}
+            style={[styles.chip, value === cat.key && styles.active]}
+            onPress={() => onChange(cat.key)}
           >
-            <Text style={[styles.chipText, value === cat && styles.activeText]}>
-              {cat}
+            <Text style={[styles.chipText, value === cat.key && styles.activeText]}>
+              {cat.label}
             </Text>
           </TouchableOpacity>
         ))}
@@ -28,16 +25,24 @@ export default function CategoryPicker({ value, onChange }) {
 }
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 12 },
-  label: { fontWeight: '600', marginBottom: 6 },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 16,
-    backgroundColor: '#f3f4f6',
+  container: { marginBottom: SPACING.md },
+  label: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
   },
-  chipText: { color: '#111827' },
-  active: { backgroundColor: '#2563eb' },
-  activeText: { color: '#fff' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
+  chip: {
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    borderRadius: BORDER_RADIUS.xl,
+    backgroundColor: COLORS.border,
+  },
+  chipText: {
+    color: COLORS.text,
+    fontSize: FONT_SIZES.sm,
+  },
+  active: { backgroundColor: COLORS.primary },
+  activeText: { color: COLORS.white },
 });

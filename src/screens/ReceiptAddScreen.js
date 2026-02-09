@@ -1,84 +1,183 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CategoryPicker from '../components/CategoryPicker';
-import { addReceipt } from '../services/storageService';
+import { addReceipt, updateReceipt } from '../services/storageService';
+import { validateReceipt } from '../utils/validation';
+import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 
-/**
- * Add receipt screen (manual entry for now).
- */
-export default function ReceiptAddScreen({ navigation }) {
-  const [amount, setAmount] = useState('');
-  const [date, setDate] = useState('');
-  const [notes, setNotes] = useState('');
-  const [category, setCategory] = useState('Other');
+export default function ReceiptAddScreen({ navigation, route }) {
+  const editMode = route.params?.editMode || false;
+  const existing = route.params?.receipt || null;
+
+  const [amount, setAmount] = useState(
+    editMode ? String(existing.expense.amount) : ''
+  );
+  const [date, setDate] = useState(
+    editMode ? existing.expense.date : new Date().toISOString().split('T')[0]
+  );
+  const [vendor, setVendor] = useState(
+    editMode ? existing.expense.vendor : ''
+  );
+  const [category, setCategory] = useState(
+    editMode ? existing.expense.category : 'fuel'
+  );
+  const [description, setDescription] = useState(
+    editMode ? existing.expense.description : ''
+  );
+  const [errors, setErrors] = useState([]);
+  const [saving, setSaving] = useState(false);
 
   const onSave = async () => {
-    if (!amount || !date) {
-      Alert.alert('Missing fields', 'Amount and date are required.');
+    const receiptData = { amount, date, vendor, category, description };
+    const validation = validateReceipt(receiptData);
+
+    if (!validation.isValid) {
+      setErrors(validation.errors);
       return;
     }
 
-    await addReceipt({
-      amount: Number(amount),
-      date,
-      notes,
-      category,
-    });
+    setErrors([]);
+    setSaving(true);
 
-    navigation.goBack();
+    try {
+      if (editMode) {
+        await updateReceipt(existing.id, {
+          amount: Number(amount),
+          date,
+          vendor,
+          category,
+          description,
+        });
+      } else {
+        await addReceipt({ amount, date, vendor, category, description });
+      }
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert('Error', err.message || 'Failed to save receipt.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add Receipt</Text>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        {errors.length > 0 && (
+          <View style={styles.errorBox}>
+            {errors.map((e, i) => (
+              <Text key={i} style={styles.errorText}>{e}</Text>
+            ))}
+          </View>
+        )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Amount (e.g., 25.50)"
-        keyboardType="numeric"
-        value={amount}
-        onChangeText={setAmount}
-      />
+        <Text style={styles.label}>Amount ($)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="0.00"
+          keyboardType="decimal-pad"
+          value={amount}
+          onChangeText={setAmount}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Date (YYYY-MM-DD)"
-        value={date}
-        onChangeText={setDate}
-      />
+        <Text style={styles.label}>Date</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="YYYY-MM-DD"
+          value={date}
+          onChangeText={setDate}
+        />
 
-      <CategoryPicker value={category} onChange={setCategory} />
+        <Text style={styles.label}>Vendor</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g., Shell, Costco"
+          value={vendor}
+          onChangeText={setVendor}
+        />
 
-      <TextInput
-        style={[styles.input, styles.notes]}
-        placeholder="Notes (optional)"
-        value={notes}
-        onChangeText={setNotes}
-        multiline
-      />
+        <CategoryPicker value={category} onChange={setCategory} />
 
-      <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-        <Text style={styles.saveButtonText}>Save Receipt</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, styles.multiline]}
+          placeholder="Optional notes"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+        />
+
+        <TouchableOpacity
+          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+          onPress={onSave}
+          disabled={saving}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Saving...' : editMode ? 'Update Receipt' : 'Save Receipt'}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: '700', marginBottom: 12 },
+  flex: { flex: 1 },
+  container: { flex: 1, backgroundColor: COLORS.background },
+  content: { padding: SPACING.lg },
+  label: {
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+    marginTop: SPACING.sm,
+  },
   input: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
+    borderColor: COLORS.border,
+    borderRadius: BORDER_RADIUS.sm,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    fontSize: FONT_SIZES.md,
+    backgroundColor: COLORS.white,
+    color: COLORS.text,
   },
-  notes: { height: 80, textAlignVertical: 'top' },
+  multiline: { height: 80, textAlignVertical: 'top' },
   saveButton: {
-    backgroundColor: '#16a34a',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: COLORS.primary,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.sm,
+    marginTop: SPACING.lg,
   },
-  saveButtonText: { color: '#fff', textAlign: 'center', fontWeight: '600' },
+  saveButtonDisabled: { opacity: 0.6 },
+  saveButtonText: {
+    color: COLORS.white,
+    textAlign: 'center',
+    fontWeight: FONT_WEIGHTS.semibold,
+    fontSize: FONT_SIZES.md,
+  },
+  errorBox: {
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: COLORS.danger,
+    borderRadius: BORDER_RADIUS.sm,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+  },
+  errorText: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZES.sm,
+  },
 });
