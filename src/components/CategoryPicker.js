@@ -2,11 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RECEIPT_CATEGORIES } from '../constants/categories';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function CategoryPicker({ value, onChange }) {
+  const { t, language } = useLanguage();
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Category</Text>
+      <Text style={styles.label}>{t('receipts.category')}</Text>
       <View style={styles.row}>
         {RECEIPT_CATEGORIES.map((cat) => (
           <TouchableOpacity
@@ -15,7 +17,7 @@ export default function CategoryPicker({ value, onChange }) {
             onPress={() => onChange(cat.key)}
           >
             <Text style={[styles.chipText, value === cat.key && styles.activeText]}>
-              {cat.label}
+              {language === 'fr' ? cat.labelFr : cat.label}
             </Text>
           </TouchableOpacity>
         ))}

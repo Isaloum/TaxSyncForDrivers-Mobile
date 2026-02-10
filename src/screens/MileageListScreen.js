@@ -15,8 +15,10 @@ import TripCard from '../components/TripCard';
 import EmptyState from '../components/EmptyState';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function MileageListScreen({ navigation }) {
+  const { t } = useLanguage();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -48,7 +50,7 @@ export default function MileageListScreen({ navigation }) {
   };
 
   if (loading && trips.length === 0) {
-    return <LoadingIndicator message="Loading mileage log..." />;
+    return <LoadingIndicator message={t('common.loading')} />;
   }
 
   return (
@@ -68,25 +70,25 @@ export default function MileageListScreen({ navigation }) {
             <View style={styles.summarySection}>
               <View style={styles.summaryRow}>
                 <SummaryCard
-                  label="Total"
+                  label={t('mileage.total')}
                   value={String(summary.totalKm)}
                   unit="km"
                   color={COLORS.primary}
                 />
                 <SummaryCard
-                  label="Business"
+                  label={t('mileage.businessPercent')}
                   value={`${summary.businessPercent}%`}
                   color={COLORS.success}
                 />
               </View>
               <View style={styles.summaryRow}>
                 <SummaryCard
-                  label="Deduction Est."
+                  label={t('mileage.deductionEst')}
                   value={`$${summary.estimatedDeduction.toFixed(2)}`}
                   color={COLORS.warning}
                 />
                 <SummaryCard
-                  label="Trips"
+                  label={t('mileage.trips')}
                   value={String(summary.totalTrips)}
                   color={COLORS.primaryLight}
                 />
@@ -96,9 +98,9 @@ export default function MileageListScreen({ navigation }) {
         }
         ListEmptyComponent={
           <EmptyState
-            title="No trips logged yet"
-            subtitle="Start tracking your mileage for CRA deductions."
-            actionLabel="Log Your First Trip"
+            title={t('mileage.noTripsAlt')}
+            subtitle={t('mileage.noTripsHintAlt')}
+            actionLabel={t('mileage.logFirstTrip')}
             onAction={() => navigation.navigate('MileageAdd')}
           />
         }

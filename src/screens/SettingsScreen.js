@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getSettings, saveSettings } from '../services/storageService';
 import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON } from '../utils/exportService';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const PROVINCES = [
   { code: 'AB', label: 'Alberta' },
@@ -27,6 +28,7 @@ function getProvinceLabel(code) {
 }
 
 export default function SettingsScreen() {
+  const { t, setLanguage } = useLanguage();
   const [settings, setSettings] = useState({ province: 'QC', language: 'en' });
   const [showProvinces, setShowProvinces] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -48,8 +50,8 @@ export default function SettingsScreen() {
 
   const toggleLanguage = async () => {
     const newLang = settings.language === 'en' ? 'fr' : 'en';
-    const updated = await saveSettings({ language: newLang });
-    setSettings(updated);
+    setLanguage(newLang);
+    setSettings({ ...settings, language: newLang });
   };
 
   const handleExport = async (type) => {
@@ -57,16 +59,16 @@ export default function SettingsScreen() {
     try {
       if (type === 'receipts') {
         const result = await exportReceiptsCSV();
-        Alert.alert('Success', `Exported ${result.count} receipts.`);
+        Alert.alert(t('common.success'), `Exported ${result.count} receipts.`);
       } else if (type === 'mileage') {
         const result = await exportMileageCSV();
-        Alert.alert('Success', `Exported ${result.count} trips.`);
+        Alert.alert(t('common.success'), `Exported ${result.count} trips.`);
       } else if (type === 'backup') {
         const result = await exportBackupJSON();
-        Alert.alert('Success', `Backup created: ${result.receipts} receipts, ${result.trips} trips.`);
+        Alert.alert(t('common.success'), `Backup created: ${result.receipts} receipts, ${result.trips} trips.`);
       }
     } catch (err) {
-      Alert.alert('Export Error', err.message || 'Failed to export.');
+      Alert.alert(t('common.error'), err.message || 'Failed to export.');
     } finally {
       setExporting(false);
     }
@@ -74,7 +76,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Settings</Text>
+      <Text style={styles.title}>{t('settings.title')}</Text>
 
       {/* Province */}
       <View style={styles.card}>
@@ -82,7 +84,7 @@ export default function SettingsScreen() {
           style={styles.settingRow}
           onPress={() => setShowProvinces(!showProvinces)}
         >
-          <Text style={styles.label}>Province</Text>
+          <Text style={styles.label}>{t('settings.province')}</Text>
           <Text style={styles.value}>{getProvinceLabel(settings.province)} ▾</Text>
         </TouchableOpacity>
 
@@ -114,7 +116,7 @@ export default function SettingsScreen() {
 
         {/* Language */}
         <TouchableOpacity style={styles.settingRow} onPress={toggleLanguage}>
-          <Text style={styles.label}>Language</Text>
+          <Text style={styles.label}>{t('settings.language')}</Text>
           <Text style={styles.value}>
             {settings.language === 'en' ? 'English' : 'Français'} ↔
           </Text>
@@ -122,14 +124,14 @@ export default function SettingsScreen() {
       </View>
 
       {/* Data export */}
-      <Text style={styles.sectionTitle}>Data Export</Text>
+      <Text style={styles.sectionTitle}>{t('settings.dataExport')}</Text>
       <View style={styles.card}>
         <TouchableOpacity
           style={styles.exportRow}
           onPress={() => handleExport('receipts')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>Export Receipts (CSV)</Text>
+          <Text style={styles.exportLabel}>{t('settings.exportReceiptsCsv')}</Text>
           <Text style={styles.exportIcon}>↗</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
@@ -138,7 +140,7 @@ export default function SettingsScreen() {
           onPress={() => handleExport('mileage')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>Export Mileage (CSV)</Text>
+          <Text style={styles.exportLabel}>{t('settings.exportMileageCsv')}</Text>
           <Text style={styles.exportIcon}>↗</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
@@ -147,21 +149,21 @@ export default function SettingsScreen() {
           onPress={() => handleExport('backup')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>Full Backup (JSON)</Text>
+          <Text style={styles.exportLabel}>{t('settings.fullBackupJson')}</Text>
           <Text style={styles.exportIcon}>↗</Text>
         </TouchableOpacity>
       </View>
 
       {/* App info */}
-      <Text style={styles.sectionTitle}>About</Text>
+      <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
       <View style={styles.card}>
         <View style={styles.settingRow}>
-          <Text style={styles.label}>Version</Text>
+          <Text style={styles.label}>{t('settings.version')}</Text>
           <Text style={styles.value}>1.0.0</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.settingRow}>
-          <Text style={styles.label}>CRA Tax Year</Text>
+          <Text style={styles.label}>{t('settings.craTaxYear')}</Text>
           <Text style={styles.value}>2026</Text>
         </View>
       </View>

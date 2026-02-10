@@ -12,8 +12,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getReceipts } from '../services/storageService';
 import ReceiptCard from '../components/ReceiptCard';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function ReceiptsListScreen({ navigation }) {
+  const { t } = useLanguage();
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,7 +59,7 @@ export default function ReceiptsListScreen({ navigation }) {
           style={[styles.addButton, { flex: 1 }]}
           onPress={() => navigation.navigate('ReceiptAdd')}
         >
-          <Text style={styles.addButtonText}>+ Add Receipt</Text>
+          <Text style={styles.addButtonText}>{t('receipts.addReceipt')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.scanButton}
@@ -79,9 +81,9 @@ export default function ReceiptsListScreen({ navigation }) {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>No receipts yet</Text>
+            <Text style={styles.emptyTitle}>{t('receipts.noReceipts')}</Text>
             <Text style={styles.emptySubtitle}>
-              Tap the button above to add your first receipt.
+              {t('receipts.noReceiptsHint')}
             </Text>
           </View>
         }

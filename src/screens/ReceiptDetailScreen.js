@@ -5,13 +5,16 @@ import { getReceiptById, deleteReceipt } from '../services/storageService';
 import { RECEIPT_CATEGORIES } from '../constants/categories';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
-function getCategoryLabel(key) {
+function getCategoryLabel(key, language) {
   const cat = RECEIPT_CATEGORIES.find((c) => c.key === key);
-  return cat ? cat.label : key || 'Other';
+  if (!cat) return key || 'Other';
+  return language === 'fr' ? cat.labelFr : cat.label;
 }
 
 export default function ReceiptDetailScreen({ navigation, route }) {
+  const { t, language } = useLanguage();
   const { receiptId } = route.params;
   const [receipt, setReceipt] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,12 +35,12 @@ export default function ReceiptDetailScreen({ navigation, route }) {
 
   const handleDelete = () => {
     Alert.alert(
-      'Delete Receipt',
-      'Are you sure you want to delete this receipt? This cannot be undone.',
+      t('receipts.deleteReceipt'),
+      t('receipts.areYouSure'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('receipts.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('receipts.delete'),
           style: 'destructive',
           onPress: async () => {
             await deleteReceipt(receiptId);
@@ -57,7 +60,7 @@ export default function ReceiptDetailScreen({ navigation, route }) {
   if (!receipt) {
     return (
       <View style={styles.center}>
-        <Text style={styles.notFound}>Receipt not found</Text>
+        <Text style={styles.notFound}>{t('receipts.receiptNotFound')}</Text>
       </View>
     );
   }
@@ -70,31 +73,31 @@ export default function ReceiptDetailScreen({ navigation, route }) {
         <Text style={styles.amount}>${expense.amount?.toFixed(2)}</Text>
 
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{getCategoryLabel(expense.category)}</Text>
+          <Text style={styles.badgeText}>{getCategoryLabel(expense.category, language)}</Text>
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Date</Text>
+          <Text style={styles.fieldLabel}>{t('receipts.date')}</Text>
           <Text style={styles.fieldValue}>{expense.date}</Text>
         </View>
 
         {expense.vendor ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Vendor</Text>
+            <Text style={styles.fieldLabel}>{t('receipts.vendor')}</Text>
             <Text style={styles.fieldValue}>{expense.vendor}</Text>
           </View>
         ) : null}
 
         {expense.description ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Description</Text>
+            <Text style={styles.fieldLabel}>{t('receipts.description')}</Text>
             <Text style={styles.fieldValue}>{expense.description}</Text>
           </View>
         ) : null}
 
         {metadata?.retainUntil ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Retain Until (CRA)</Text>
+            <Text style={styles.fieldLabel}>{t('receipts.retainUntilCRA')}</Text>
             <Text style={styles.fieldValue}>
               {new Date(metadata.retainUntil).toLocaleDateString()}
             </Text>
@@ -104,10 +107,10 @@ export default function ReceiptDetailScreen({ navigation, route }) {
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <Text style={styles.editButtonText}>Edit Receipt</Text>
+          <Text style={styles.editButtonText}>{t('receipts.editReceipt')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
+          <Text style={styles.deleteButtonText}>{t('receipts.delete')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

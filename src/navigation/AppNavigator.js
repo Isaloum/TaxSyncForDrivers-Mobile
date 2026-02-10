@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { COLORS, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 import ReceiptsListScreen from '../screens/ReceiptsListScreen';
 import ReceiptAddScreen from '../screens/ReceiptAddScreen';
@@ -28,77 +29,81 @@ const stackScreenOptions = {
 };
 
 function ReceiptsStackNavigator() {
+  const { t } = useLanguage();
   return (
     <ReceiptsStack.Navigator screenOptions={stackScreenOptions}>
       <ReceiptsStack.Screen
         name="ReceiptsList"
         component={ReceiptsListScreen}
-        options={{ title: 'Receipts' }}
+        options={{ title: t('receipts.title') }}
       />
       <ReceiptsStack.Screen
         name="ReceiptAdd"
         component={ReceiptAddScreen}
         options={({ route }) => ({
-          title: route.params?.editMode ? 'Edit Receipt' : 'Add Receipt',
+          title: route.params?.editMode ? t('receipts.editReceipt') : t('receipts.addReceipt'),
         })}
       />
       <ReceiptsStack.Screen
         name="ReceiptDetail"
         component={ReceiptDetailScreen}
-        options={{ title: 'Receipt Details' }}
+        options={{ title: t('receipts.receiptDetails') }}
       />
       <ReceiptsStack.Screen
         name="CameraCapture"
         component={CameraCaptureScreen}
-        options={{ title: 'Scan Receipt', headerShown: false }}
+        options={{ title: t('dashboard.scan'), headerShown: false }}
       />
     </ReceiptsStack.Navigator>
   );
 }
 
 function MileageStackNavigator() {
+  const { t } = useLanguage();
   return (
     <MileageStack.Navigator screenOptions={stackScreenOptions}>
       <MileageStack.Screen
         name="MileageList"
         component={MileageListScreen}
-        options={{ title: 'Mileage Log' }}
+        options={{ title: t('mileage.title') }}
       />
       <MileageStack.Screen
         name="MileageAdd"
         component={MileageAddScreen}
         options={({ route }) => ({
-          title: route.params?.editMode ? 'Edit Trip' : 'Log Trip',
+          title: route.params?.editMode ? t('mileage.editTrip') : t('mileage.logTrip'),
         })}
       />
       <MileageStack.Screen
         name="MileageDetail"
         component={MileageDetailScreen}
-        options={{ title: 'Trip Details' }}
+        options={{ title: t('mileage.tripDetails') }}
       />
     </MileageStack.Navigator>
   );
 }
 
 function DashboardStackNavigator() {
+  const { t } = useLanguage();
   return (
     <DashboardStack.Navigator screenOptions={stackScreenOptions}>
       <DashboardStack.Screen
         name="DashboardHome"
         component={DashboardScreen}
-        options={{ title: 'Dashboard' }}
+        options={{ title: t('dashboard.title') }}
       />
     </DashboardStack.Navigator>
   );
 }
 
 function SettingsStackNavigator() {
+  const { t } = useLanguage();
   return (
     <SettingsStack.Navigator screenOptions={stackScreenOptions}>
       <SettingsStack.Screen
         name="SettingsHome"
         component={SettingsScreen}
-        options={{ title: 'Settings' }}
+        options={{ title: t('settings.title') }}
       />
     </SettingsStack.Navigator>
   );
@@ -119,6 +124,7 @@ function TabIcon({ label, focused }) {
 }
 
 export default function AppNavigator() {
+  const { t } = useLanguage();
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -136,7 +142,7 @@ export default function AppNavigator() {
           name="DashboardTab"
           component={DashboardStackNavigator}
           options={{
-            title: 'Dashboard',
+            title: t('dashboard.title'),
             tabBarIcon: ({ focused }) => (
               <TabIcon label="Dashboard" focused={focused} />
             ),
@@ -146,7 +152,7 @@ export default function AppNavigator() {
           name="ReceiptsTab"
           component={ReceiptsStackNavigator}
           options={{
-            title: 'Receipts',
+            title: t('receipts.title'),
             tabBarIcon: ({ focused }) => (
               <TabIcon label="Receipts" focused={focused} />
             ),
@@ -156,7 +162,7 @@ export default function AppNavigator() {
           name="MileageTab"
           component={MileageStackNavigator}
           options={{
-            title: 'Mileage',
+            title: t('mileage.title'),
             tabBarIcon: ({ focused }) => (
               <TabIcon label="Mileage" focused={focused} />
             ),
@@ -166,7 +172,7 @@ export default function AppNavigator() {
           name="SettingsTab"
           component={SettingsStackNavigator}
           options={{
-            title: 'Settings',
+            title: t('settings.title'),
             tabBarIcon: ({ focused }) => (
               <TabIcon label="Settings" focused={focused} />
             ),

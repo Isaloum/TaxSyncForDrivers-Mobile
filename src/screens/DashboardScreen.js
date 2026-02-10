@@ -13,8 +13,10 @@ import SummaryCard from '../components/SummaryCard';
 import PieChart from '../components/PieChart';
 import MonthlyTrendChart from '../components/MonthlyTrendChart';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function DashboardScreen({ navigation }) {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const [stats, setStats] = useState({
@@ -90,30 +92,30 @@ export default function DashboardScreen({ navigation }) {
         />
       }
     >
-      <Text style={styles.title}>Dashboard</Text>
+      <Text style={styles.title}>{t('dashboard.title')}</Text>
 
       {/* Summary cards */}
       <View style={styles.row}>
         <SummaryCard
-          label="Total Expenses"
+          label={t('dashboard.totalExpenses')}
           value={`$${stats.totalExpenses.toFixed(2)}`}
           color={COLORS.primary}
         />
         <SummaryCard
-          label="Receipts"
+          label={t('dashboard.receipts')}
           value={String(stats.receiptCount)}
           color={COLORS.primaryLight}
         />
       </View>
       <View style={styles.row}>
         <SummaryCard
-          label="Business Km"
+          label={t('dashboard.businessKm')}
           value={String(stats.totalKm)}
           unit="km"
           color={COLORS.success}
         />
         <SummaryCard
-          label="Mileage Deduction"
+          label={t('dashboard.mileageDeduction')}
           value={`$${stats.estimatedDeduction.toFixed(0)}`}
           color={COLORS.warning}
         />
@@ -122,14 +124,14 @@ export default function DashboardScreen({ navigation }) {
       {/* Category breakdown */}
       {categoryData.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Expenses by Category</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.expensesByCategory')}</Text>
           <PieChart data={categoryData} />
         </View>
       )}
 
       {/* Monthly expenses trend */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Monthly Expenses</Text>
+        <Text style={styles.sectionTitle}>{t('dashboard.monthlyExpenses')}</Text>
         <MonthlyTrendChart
           monthlyData={monthlyExpenses}
           year={String(currentYear)}
@@ -139,7 +141,7 @@ export default function DashboardScreen({ navigation }) {
 
       {/* Monthly mileage trend */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Monthly Mileage (km)</Text>
+        <Text style={styles.sectionTitle}>{t('dashboard.monthlyMileage')}</Text>
         <MonthlyTrendChart
           monthlyData={monthlyKm}
           year={String(currentYear)}
@@ -150,21 +152,21 @@ export default function DashboardScreen({ navigation }) {
       {/* GST/QST summary */}
       {taxSummary && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Tax Summary (Estimated)</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.taxSummary')}</Text>
           <View style={styles.taxCard}>
             <View style={styles.taxRow}>
-              <Text style={styles.taxLabel}>GST (5%)</Text>
+              <Text style={styles.taxLabel}>{t('dashboard.gst')}</Text>
               <Text style={styles.taxValue}>${taxSummary.gstPaid.toFixed(2)}</Text>
             </View>
             {taxSummary.qstPaid > 0 && (
               <View style={styles.taxRow}>
-                <Text style={styles.taxLabel}>QST (9.975%)</Text>
+                <Text style={styles.taxLabel}>{t('dashboard.qst')}</Text>
                 <Text style={styles.taxValue}>${taxSummary.qstPaid.toFixed(2)}</Text>
               </View>
             )}
             <View style={styles.divider} />
             <View style={styles.taxRow}>
-              <Text style={[styles.taxLabel, styles.taxTotal]}>Total Tax Paid</Text>
+              <Text style={[styles.taxLabel, styles.taxTotal]}>{t('dashboard.totalTaxPaid')}</Text>
               <Text style={[styles.taxValue, styles.taxTotal]}>
                 ${taxSummary.totalTaxPaid.toFixed(2)}
               </Text>
@@ -175,7 +177,7 @@ export default function DashboardScreen({ navigation }) {
 
       {/* Quick actions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>{t('dashboard.quickActions')}</Text>
         <View style={styles.actionsRow}>
           <TouchableOpacity
             style={styles.actionButton}
@@ -184,7 +186,7 @@ export default function DashboardScreen({ navigation }) {
             }
           >
             <Text style={styles.actionIcon}>+</Text>
-            <Text style={styles.actionText}>Receipt</Text>
+            <Text style={styles.actionText}>{t('dashboard.receipt')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.actionButton}
@@ -193,7 +195,7 @@ export default function DashboardScreen({ navigation }) {
             }
           >
             <Text style={styles.actionIcon}>+</Text>
-            <Text style={styles.actionText}>Trip</Text>
+            <Text style={styles.actionText}>{t('dashboard.trip')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.actionButton}
@@ -202,7 +204,7 @@ export default function DashboardScreen({ navigation }) {
             }
           >
             <Text style={styles.actionIcon}>📷</Text>
-            <Text style={styles.actionText}>Scan</Text>
+            <Text style={styles.actionText}>{t('dashboard.scan')}</Text>
           </TouchableOpacity>
         </View>
       </View>
