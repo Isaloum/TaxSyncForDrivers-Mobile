@@ -5,8 +5,10 @@ import { getTripById, deleteTrip } from '../services/storageService';
 import { calculateSimplifiedDeduction } from '../utils/mileageCalculations';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function MileageDetailScreen({ navigation, route }) {
+  const { t } = useLanguage();
   const { tripId } = route.params;
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,12 +29,12 @@ export default function MileageDetailScreen({ navigation, route }) {
 
   const handleDelete = () => {
     Alert.alert(
-      'Delete Trip',
-      'Are you sure you want to delete this trip? This cannot be undone.',
+      t('mileage.deleteTrip'),
+      t('mileage.areYouSure'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('mileage.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('mileage.delete'),
           style: 'destructive',
           onPress: async () => {
             await deleteTrip(tripId);
@@ -47,12 +49,12 @@ export default function MileageDetailScreen({ navigation, route }) {
     navigation.navigate('MileageAdd', { editMode: true, trip });
   };
 
-  if (loading) return <LoadingIndicator message="Loading trip..." />;
+  if (loading) return <LoadingIndicator message={t('common.loading')} />;
 
   if (!trip) {
     return (
       <View style={styles.center}>
-        <Text style={styles.notFound}>Trip not found</Text>
+        <Text style={styles.notFound}>{t('mileage.tripNotFound')}</Text>
       </View>
     );
   }
@@ -78,68 +80,68 @@ export default function MileageDetailScreen({ navigation, route }) {
               trip.isBusinessTrip ? styles.businessText : styles.personalText,
             ]}
           >
-            {trip.isBusinessTrip ? 'Business' : 'Personal'}
+            {trip.isBusinessTrip ? t('mileage.business') : t('mileage.personal')}
           </Text>
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Date</Text>
+          <Text style={styles.fieldLabel}>{t('mileage.date')}</Text>
           <Text style={styles.fieldValue}>{trip.date}</Text>
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Purpose</Text>
+          <Text style={styles.fieldLabel}>{t('mileage.purpose')}</Text>
           <Text style={styles.fieldValue}>{trip.purpose}</Text>
         </View>
 
         <View style={styles.odometerRow}>
           <View style={styles.odometerBox}>
-            <Text style={styles.odometerLabel}>Start</Text>
+            <Text style={styles.odometerLabel}>{t('mileage.start')}</Text>
             <Text style={styles.odometerValue}>{trip.startOdometer} km</Text>
           </View>
           <Text style={styles.arrow}>→</Text>
           <View style={styles.odometerBox}>
-            <Text style={styles.odometerLabel}>End</Text>
+            <Text style={styles.odometerLabel}>{t('mileage.end')}</Text>
             <Text style={styles.odometerValue}>{trip.endOdometer} km</Text>
           </View>
         </View>
 
         <View style={styles.distanceBox}>
-          <Text style={styles.distanceLabel}>Distance</Text>
+          <Text style={styles.distanceLabel}>{t('mileage.distance')}</Text>
           <Text style={styles.distanceValue}>{trip.distance} km</Text>
         </View>
 
         {trip.isBusinessTrip && trip.clientName ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Client</Text>
+            <Text style={styles.fieldLabel}>{t('mileage.clientName')}</Text>
             <Text style={styles.fieldValue}>{trip.clientName}</Text>
           </View>
         ) : null}
 
         {trip.notes ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Notes</Text>
+            <Text style={styles.fieldLabel}>{t('mileage.notes')}</Text>
             <Text style={styles.fieldValue}>{trip.notes}</Text>
           </View>
         ) : null}
 
         {trip.isBusinessTrip && (
           <View style={styles.deductionBox}>
-            <Text style={styles.deductionLabel}>Estimated Deduction</Text>
+            <Text style={styles.deductionLabel}>{t('mileage.estimatedDeduction')}</Text>
             <Text style={styles.deductionValue}>
               ${deductionEstimate.toFixed(2)}
             </Text>
-            <Text style={styles.deductionNote}>CRA simplified method</Text>
+            <Text style={styles.deductionNote}>{t('mileage.craSimplified')}</Text>
           </View>
         )}
       </View>
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <Text style={styles.editButtonText}>Edit Trip</Text>
+          <Text style={styles.editButtonText}>{t('mileage.editTrip')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
+          <Text style={styles.deleteButtonText}>{t('mileage.delete')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

@@ -15,8 +15,10 @@ import CategoryPicker from '../components/CategoryPicker';
 import { addReceipt, updateReceipt } from '../services/storageService';
 import { validateReceipt } from '../utils/validation';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function ReceiptAddScreen({ navigation, route }) {
+  const { t } = useLanguage();
   const editMode = route.params?.editMode || false;
   const existing = route.params?.receipt || null;
   const capturedPhotoUri = route.params?.capturedPhotoUri || null;
@@ -70,7 +72,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
       }
       navigation.goBack();
     } catch (err) {
-      Alert.alert('Error', err.message || 'Failed to save receipt.');
+      Alert.alert(t('common.error'), err.message || 'Failed to save receipt.');
     } finally {
       setSaving(false);
     }
@@ -102,7 +104,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
           </View>
         )}
 
-        <Text style={styles.label}>Amount ($)</Text>
+        <Text style={styles.label}>{t('receipts.amount')}</Text>
         <TextInput
           style={styles.input}
           placeholder="0.00"
@@ -111,7 +113,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
           onChangeText={setAmount}
         />
 
-        <Text style={styles.label}>Date</Text>
+        <Text style={styles.label}>{t('receipts.date')}</Text>
         <TextInput
           style={styles.input}
           placeholder="YYYY-MM-DD"
@@ -119,7 +121,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
           onChangeText={setDate}
         />
 
-        <Text style={styles.label}>Vendor</Text>
+        <Text style={styles.label}>{t('receipts.vendor')}</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g., Shell, Costco"
@@ -129,10 +131,10 @@ export default function ReceiptAddScreen({ navigation, route }) {
 
         <CategoryPicker value={category} onChange={setCategory} />
 
-        <Text style={styles.label}>Description</Text>
+        <Text style={styles.label}>{t('receipts.description')}</Text>
         <TextInput
           style={[styles.input, styles.multiline]}
-          placeholder="Optional notes"
+          placeholder={t('receipts.optionalNotes')}
           value={description}
           onChangeText={setDescription}
           multiline
@@ -144,7 +146,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
           disabled={saving}
         >
           <Text style={styles.saveButtonText}>
-            {saving ? 'Saving...' : editMode ? 'Update Receipt' : 'Save Receipt'}
+            {saving ? t('receipts.saving') : editMode ? t('receipts.updateReceipt') : t('receipts.saveReceipt')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

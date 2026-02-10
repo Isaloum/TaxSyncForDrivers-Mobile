@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
+  const { t } = useLanguage();
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Trip Type</Text>
@@ -12,7 +14,7 @@ export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
           onPress={() => onChange(true)}
         >
           <Text style={[styles.text, isBusinessTrip && styles.activeText]}>
-            Business
+            {t('mileage.business')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -20,7 +22,7 @@ export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
           onPress={() => onChange(false)}
         >
           <Text style={[styles.text, !isBusinessTrip && styles.activeText]}>
-            Personal
+            {t('mileage.personal')}
           </Text>
         </TouchableOpacity>
       </View>

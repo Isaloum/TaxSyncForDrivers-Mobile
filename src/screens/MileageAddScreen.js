@@ -15,8 +15,10 @@ import { addTrip, getTrips, updateTrip } from '../services/storageService';
 import { getLastOdometerReading } from '../utils/mileageCalculations';
 import { validateTrip } from '../utils/validation';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function MileageAddScreen({ navigation, route }) {
+  const { t } = useLanguage();
   const editMode = route.params?.editMode || false;
   const existing = route.params?.trip || null;
 
@@ -102,7 +104,7 @@ export default function MileageAddScreen({ navigation, route }) {
       }
       navigation.goBack();
     } catch (err) {
-      Alert.alert('Error', err.message || 'Failed to save trip.');
+      Alert.alert(t('common.error'), err.message || 'Failed to save trip.');
     } finally {
       setSaving(false);
     }
@@ -122,7 +124,7 @@ export default function MileageAddScreen({ navigation, route }) {
           </View>
         )}
 
-        <Text style={styles.label}>Date</Text>
+        <Text style={styles.label}>{t('mileage.date')}</Text>
         <TextInput
           style={styles.input}
           placeholder="YYYY-MM-DD"
@@ -130,7 +132,7 @@ export default function MileageAddScreen({ navigation, route }) {
           onChangeText={setDate}
         />
 
-        <Text style={styles.label}>Destination</Text>
+        <Text style={styles.label}>{t('mileage.destination')}</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g., Client office downtown"
@@ -138,7 +140,7 @@ export default function MileageAddScreen({ navigation, route }) {
           onChangeText={setDestination}
         />
 
-        <Text style={styles.label}>Purpose</Text>
+        <Text style={styles.label}>{t('mileage.purpose')}</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g., Client meeting, delivery"
@@ -146,7 +148,7 @@ export default function MileageAddScreen({ navigation, route }) {
           onChangeText={setPurpose}
         />
 
-        <Text style={styles.label}>Start Odometer (km)</Text>
+        <Text style={styles.label}>{t('mileage.startOdometerKm')}</Text>
         <TextInput
           style={styles.input}
           placeholder="0"
@@ -155,7 +157,7 @@ export default function MileageAddScreen({ navigation, route }) {
           onChangeText={setStartOdometer}
         />
 
-        <Text style={styles.label}>End Odometer (km)</Text>
+        <Text style={styles.label}>{t('mileage.endOdometerKm')}</Text>
         <TextInput
           style={styles.input}
           placeholder="0"
@@ -166,7 +168,7 @@ export default function MileageAddScreen({ navigation, route }) {
 
         {distance > 0 && (
           <View style={styles.distanceDisplay}>
-            <Text style={styles.distanceLabel}>Distance</Text>
+            <Text style={styles.distanceLabel}>{t('mileage.distance')}</Text>
             <Text style={styles.distanceValue}>{distance} km</Text>
           </View>
         )}
@@ -178,7 +180,7 @@ export default function MileageAddScreen({ navigation, route }) {
 
         {isBusinessTrip && (
           <>
-            <Text style={styles.label}>Client Name (optional)</Text>
+            <Text style={styles.label}>{t('mileage.clientNameOptional')}</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g., Uber, DoorDash"
@@ -188,7 +190,7 @@ export default function MileageAddScreen({ navigation, route }) {
           </>
         )}
 
-        <Text style={styles.label}>Notes (optional)</Text>
+        <Text style={styles.label}>{t('mileage.notesOptional')}</Text>
         <TextInput
           style={[styles.input, styles.multiline]}
           placeholder="Additional details"
@@ -203,7 +205,7 @@ export default function MileageAddScreen({ navigation, route }) {
           disabled={saving}
         >
           <Text style={styles.saveButtonText}>
-            {saving ? 'Saving...' : editMode ? 'Update Trip' : 'Save Trip'}
+            {saving ? 'Saving...' : editMode ? t('mileage.updateTrip') : t('mileage.saveTrip')}
           </Text>
         </TouchableOpacity>
       </ScrollView>
