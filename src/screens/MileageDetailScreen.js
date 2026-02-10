@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: SPACING.lg,
   },
-  businessBadge: { backgroundColor: '#ecfdf5' },
-  personalBadge: { backgroundColor: '#f1f5f9' },
+  businessBadge: { backgroundColor: COLORS.successLight },
+  personalBadge: { backgroundColor: COLORS.mutedLight },
   typeText: {
     fontSize: FONT_SIZES.sm,
     fontWeight: FONT_WEIGHTS.medium,
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     color: COLORS.muted,
   },
   distanceBox: {
-    backgroundColor: '#ecfdf5',
+    backgroundColor: COLORS.successLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     flexDirection: 'row',
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHTS.bold,
   },
   deductionBox: {
-    backgroundColor: '#fffbeb',
+    backgroundColor: COLORS.warningLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.sm,

@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   multiline: { height: 80, textAlignVertical: 'top' },
   distanceDisplay: {
-    backgroundColor: '#ecfdf5',
+    backgroundColor: COLORS.successLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     marginBottom: SPACING.md,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.md,
   },
   errorBox: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: COLORS.dangerLight,
     borderWidth: 1,
     borderColor: COLORS.danger,
     borderRadius: BORDER_RADIUS.sm,

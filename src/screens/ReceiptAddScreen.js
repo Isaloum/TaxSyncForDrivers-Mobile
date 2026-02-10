@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -18,6 +19,7 @@ import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../con
 export default function ReceiptAddScreen({ navigation, route }) {
   const editMode = route.params?.editMode || false;
   const existing = route.params?.receipt || null;
+  const capturedPhotoUri = route.params?.capturedPhotoUri || null;
 
   const [amount, setAmount] = useState(
     editMode ? String(existing.expense.amount) : ''
@@ -33,6 +35,9 @@ export default function ReceiptAddScreen({ navigation, route }) {
   );
   const [description, setDescription] = useState(
     editMode ? existing.expense.description : ''
+  );
+  const [photoUri, setPhotoUri] = useState(
+    editMode ? existing.metadata?.photoUri || null : capturedPhotoUri
   );
   const [errors, setErrors] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -50,6 +55,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
     setSaving(true);
 
     try {
+      const receiptPayload = { amount, date, vendor, category, description, photoUri };
       if (editMode) {
         await updateReceipt(existing.id, {
           amount: Number(amount),
@@ -57,9 +63,10 @@ export default function ReceiptAddScreen({ navigation, route }) {
           vendor,
           category,
           description,
+          photoUri,
         });
       } else {
-        await addReceipt({ amount, date, vendor, category, description });
+        await addReceipt(receiptPayload);
       }
       navigation.goBack();
     } catch (err) {
@@ -80,6 +87,18 @@ export default function ReceiptAddScreen({ navigation, route }) {
             {errors.map((e, i) => (
               <Text key={i} style={styles.errorText}>{e}</Text>
             ))}
+          </View>
+        )}
+
+        {photoUri && (
+          <View style={styles.photoPreview}>
+            <Image source={{ uri: photoUri }} style={styles.photoImage} />
+            <TouchableOpacity
+              style={styles.removePhotoButton}
+              onPress={() => setPhotoUri(null)}
+            >
+              <Text style={styles.removePhotoText}>Remove Photo</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -168,8 +187,27 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
+  photoPreview: {
+    marginBottom: SPACING.lg,
+    alignItems: 'center',
+  },
+  photoImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: BORDER_RADIUS.sm,
+    resizeMode: 'cover',
+    marginBottom: SPACING.sm,
+  },
+  removePhotoButton: {
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+  },
+  removePhotoText: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZES.sm,
+  },
   errorBox: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: COLORS.dangerLight,
     borderWidth: 1,
     borderColor: COLORS.danger,
     borderRadius: BORDER_RADIUS.sm,

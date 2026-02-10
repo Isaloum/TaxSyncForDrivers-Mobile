@@ -1,17 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
-
-const CHART_COLORS = [
-  COLORS.primary,
-  COLORS.primaryLight,
-  COLORS.success,
-  COLORS.warning,
-  COLORS.danger,
-  '#8b5cf6',
-  '#ec4899',
-  '#6366f1',
-];
+import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS, CHART_COLORS } from '../constants/theme';
 
 /**
  * Pure React Native "pie chart" using horizontal stacked bar + legend.
