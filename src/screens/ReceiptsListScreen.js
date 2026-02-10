@@ -57,12 +57,20 @@ export default function ReceiptsListScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigation.navigate('ReceiptAdd')}
-      >
-        <Text style={styles.addButtonText}>+ Add Receipt</Text>
-      </TouchableOpacity>
+      <View style={styles.headerButtons}>
+        <TouchableOpacity
+          style={[styles.addButton, { flex: 1 }]}
+          onPress={() => navigation.navigate('ReceiptAdd')}
+        >
+          <Text style={styles.addButtonText}>+ Add Receipt</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.scanButton}
+          onPress={() => navigation.navigate('CameraCapture')}
+        >
+          <Text style={styles.scanButtonText}>📷</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={receipts}
@@ -123,17 +131,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.background,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
   addButton: {
     backgroundColor: COLORS.primary,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
-    marginBottom: SPACING.md,
   },
   addButtonText: {
     color: COLORS.white,
     textAlign: 'center',
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
+  },
+  scanButton: {
+    backgroundColor: COLORS.primaryLight,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.sm,
+    paddingHorizontal: SPACING.lg,
+    justifyContent: 'center',
+  },
+  scanButtonText: {
+    fontSize: FONT_SIZES.lg,
   },
   emptyContainer: {
     alignItems: 'center',

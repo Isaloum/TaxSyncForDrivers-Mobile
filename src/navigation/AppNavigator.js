@@ -8,6 +8,7 @@ import { COLORS, FONT_WEIGHTS } from '../constants/theme';
 import ReceiptsListScreen from '../screens/ReceiptsListScreen';
 import ReceiptAddScreen from '../screens/ReceiptAddScreen';
 import ReceiptDetailScreen from '../screens/ReceiptDetailScreen';
+import CameraCaptureScreen from '../screens/CameraCaptureScreen';
 import MileageListScreen from '../screens/MileageListScreen';
 import MileageAddScreen from '../screens/MileageAddScreen';
 import MileageDetailScreen from '../screens/MileageDetailScreen';
@@ -45,6 +46,11 @@ function ReceiptsStackNavigator() {
         name="ReceiptDetail"
         component={ReceiptDetailScreen}
         options={{ title: 'Receipt Details' }}
+      />
+      <ReceiptsStack.Screen
+        name="CameraCapture"
+        component={CameraCaptureScreen}
+        options={{ title: 'Scan Receipt', headerShown: false }}
       />
     </ReceiptsStack.Navigator>
   );
