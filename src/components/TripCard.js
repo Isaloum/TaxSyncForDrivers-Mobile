@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.xl,
   },
   businessBadge: {
-    backgroundColor: '#ecfdf5',
+    backgroundColor: COLORS.successLight,
   },
   personalBadge: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: COLORS.mutedLight,
   },
   typeText: {
     fontSize: FONT_SIZES.xs,

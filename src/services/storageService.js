@@ -100,6 +100,7 @@ export async function addReceipt(receiptData) {
       uploadedAt: now,
       retainUntil: calculateRetentionDate(expenseDate),
       auditStatus: 'active',
+      photoUri: receiptData.photoUri || null,
     },
   };
 
