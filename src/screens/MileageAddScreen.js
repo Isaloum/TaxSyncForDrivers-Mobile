@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import BusinessPersonalToggle from '../components/BusinessPersonalToggle';
+import DatePickerField from '../components/DatePickerField';
 import { addTrip, getTrips, updateTrip } from '../services/storageService';
 import { getLastOdometerReading } from '../utils/mileageCalculations';
 import { validateTrip } from '../utils/validation';
@@ -124,12 +125,10 @@ export default function MileageAddScreen({ navigation, route }) {
           </View>
         )}
 
-        <Text style={styles.label}>{t('mileage.date')}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
+        <DatePickerField
+          label={t('mileage.date')}
           value={date}
-          onChangeText={setDate}
+          onChange={setDate}
         />
 
         <Text style={styles.label}>{t('mileage.destination')}</Text>
