@@ -1,10 +1,11 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONT_WEIGHTS } from '../constants/theme';
+import { FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 import ReceiptsListScreen from '../screens/ReceiptsListScreen';
 import ReceiptAddScreen from '../screens/ReceiptAddScreen';
@@ -22,16 +23,20 @@ const MileageStack = createStackNavigator();
 const DashboardStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 
-const stackScreenOptions = {
-  headerStyle: { backgroundColor: COLORS.primary },
-  headerTintColor: COLORS.white,
-  headerTitleStyle: { fontWeight: FONT_WEIGHTS.bold },
-};
+function useStackScreenOptions() {
+  const { colors } = useTheme();
+  return {
+    headerStyle: { backgroundColor: colors.primary },
+    headerTintColor: '#ffffff',
+    headerTitleStyle: { fontWeight: FONT_WEIGHTS.bold },
+  };
+}
 
 function ReceiptsStackNavigator() {
   const { t } = useLanguage();
+  const screenOptions = useStackScreenOptions();
   return (
-    <ReceiptsStack.Navigator screenOptions={stackScreenOptions}>
+    <ReceiptsStack.Navigator screenOptions={screenOptions}>
       <ReceiptsStack.Screen
         name="ReceiptsList"
         component={ReceiptsListScreen}
@@ -60,8 +65,9 @@ function ReceiptsStackNavigator() {
 
 function MileageStackNavigator() {
   const { t } = useLanguage();
+  const screenOptions = useStackScreenOptions();
   return (
-    <MileageStack.Navigator screenOptions={stackScreenOptions}>
+    <MileageStack.Navigator screenOptions={screenOptions}>
       <MileageStack.Screen
         name="MileageList"
         component={MileageListScreen}
@@ -85,8 +91,9 @@ function MileageStackNavigator() {
 
 function DashboardStackNavigator() {
   const { t } = useLanguage();
+  const screenOptions = useStackScreenOptions();
   return (
-    <DashboardStack.Navigator screenOptions={stackScreenOptions}>
+    <DashboardStack.Navigator screenOptions={screenOptions}>
       <DashboardStack.Screen
         name="DashboardHome"
         component={DashboardScreen}
@@ -98,8 +105,9 @@ function DashboardStackNavigator() {
 
 function SettingsStackNavigator() {
   const { t } = useLanguage();
+  const screenOptions = useStackScreenOptions();
   return (
-    <SettingsStack.Navigator screenOptions={stackScreenOptions}>
+    <SettingsStack.Navigator screenOptions={screenOptions}>
       <SettingsStack.Screen
         name="SettingsHome"
         component={SettingsScreen}
@@ -116,29 +124,31 @@ const TAB_ICONS = {
   Settings: { focused: 'settings', unfocused: 'settings-outline' },
 };
 
-function TabIcon({ label, focused }) {
-  const iconSet = TAB_ICONS[label] || { focused: 'ellipse', unfocused: 'ellipse-outline' };
-  const iconName = focused ? iconSet.focused : iconSet.unfocused;
-  return (
-    <Ionicons
-      name={iconName}
-      size={22}
-      color={focused ? COLORS.primary : COLORS.muted}
-    />
-  );
-}
-
 export default function AppNavigator() {
   const { t } = useLanguage();
+  const { colors, isDark } = useTheme();
+
+  const navTheme = {
+    ...(isDark ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
+      primary: colors.primary,
+      background: colors.background,
+      card: colors.card,
+      text: colors.text,
+      border: colors.border,
+    },
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: COLORS.primary,
-          tabBarInactiveTintColor: COLORS.muted,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.muted,
           tabBarStyle: {
-            backgroundColor: COLORS.white,
-            borderTopColor: COLORS.border,
+            backgroundColor: colors.card,
+            borderTopColor: colors.border,
           },
           headerShown: false,
         }}
@@ -149,7 +159,11 @@ export default function AppNavigator() {
           options={{
             title: t('dashboard.title'),
             tabBarIcon: ({ focused }) => (
-              <TabIcon label="Dashboard" focused={focused} />
+              <Ionicons
+                name={focused ? TAB_ICONS.Dashboard.focused : TAB_ICONS.Dashboard.unfocused}
+                size={22}
+                color={focused ? colors.primary : colors.muted}
+              />
             ),
           }}
         />
@@ -159,7 +173,11 @@ export default function AppNavigator() {
           options={{
             title: t('receipts.title'),
             tabBarIcon: ({ focused }) => (
-              <TabIcon label="Receipts" focused={focused} />
+              <Ionicons
+                name={focused ? TAB_ICONS.Receipts.focused : TAB_ICONS.Receipts.unfocused}
+                size={22}
+                color={focused ? colors.primary : colors.muted}
+              />
             ),
           }}
         />
@@ -169,7 +187,11 @@ export default function AppNavigator() {
           options={{
             title: t('mileage.title'),
             tabBarIcon: ({ focused }) => (
-              <TabIcon label="Mileage" focused={focused} />
+              <Ionicons
+                name={focused ? TAB_ICONS.Mileage.focused : TAB_ICONS.Mileage.unfocused}
+                size={22}
+                color={focused ? colors.primary : colors.muted}
+              />
             ),
           }}
         />
@@ -179,7 +201,11 @@ export default function AppNavigator() {
           options={{
             title: t('settings.title'),
             tabBarIcon: ({ focused }) => (
-              <TabIcon label="Settings" focused={focused} />
+              <Ionicons
+                name={focused ? TAB_ICONS.Settings.focused : TAB_ICONS.Settings.unfocused}
+                size={22}
+                color={focused ? colors.primary : colors.muted}
+              />
             ),
           }}
         />

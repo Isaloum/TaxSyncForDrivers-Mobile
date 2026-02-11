@@ -3,8 +3,9 @@ import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { useFocusEffect } from '@react-navigation/native';
 import { getSettings, saveSettings } from '../services/storageService';
 import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON } from '../utils/exportService';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const PROVINCES = [
   { code: 'AB', label: 'Alberta' },
@@ -22,13 +23,20 @@ const PROVINCES = [
   { code: 'YT', label: 'Yukon' },
 ];
 
+const THEME_OPTIONS = [
+  { value: 'light', labelEn: 'Light', labelFr: 'Clair', icon: '☀️' },
+  { value: 'dark', labelEn: 'Dark', labelFr: 'Sombre', icon: '🌙' },
+  { value: 'system', labelEn: 'System', labelFr: 'Système', icon: '⚙️' },
+];
+
 function getProvinceLabel(code) {
   const p = PROVINCES.find((pr) => pr.code === code);
   return p ? p.label : code;
 }
 
 export default function SettingsScreen() {
-  const { t, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
+  const { theme, setTheme, colors } = useTheme();
   const [settings, setSettings] = useState({ province: 'QC', language: 'en' });
   const [showProvinces, setShowProvinces] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -74,18 +82,27 @@ export default function SettingsScreen() {
     }
   };
 
+  const dynamicStyles = {
+    container: { backgroundColor: colors.background },
+    card: { backgroundColor: colors.card, borderColor: colors.border },
+    text: { color: colors.text },
+    muted: { color: colors.muted },
+    primary: { color: colors.primary },
+    divider: { backgroundColor: colors.border },
+  };
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{t('settings.title')}</Text>
+    <ScrollView style={[styles.container, dynamicStyles.container]} contentContainerStyle={styles.content}>
+      <Text style={[styles.title, dynamicStyles.text]}>{t('settings.title')}</Text>
 
       {/* Province */}
-      <View style={styles.card}>
+      <View style={[styles.card, dynamicStyles.card]}>
         <TouchableOpacity
           style={styles.settingRow}
           onPress={() => setShowProvinces(!showProvinces)}
         >
-          <Text style={styles.label}>{t('settings.province')}</Text>
-          <Text style={styles.value}>{getProvinceLabel(settings.province)} ▾</Text>
+          <Text style={[styles.label, dynamicStyles.text]}>{t('settings.province')}</Text>
+          <Text style={[styles.value, dynamicStyles.primary]}>{getProvinceLabel(settings.province)} ▾</Text>
         </TouchableOpacity>
 
         {showProvinces && (
@@ -95,14 +112,15 @@ export default function SettingsScreen() {
                 key={p.code}
                 style={[
                   styles.pickerItem,
-                  settings.province === p.code && styles.pickerItemActive,
+                  settings.province === p.code && { backgroundColor: colors.primary },
                 ]}
                 onPress={() => selectProvince(p.code)}
               >
                 <Text
                   style={[
                     styles.pickerText,
-                    settings.province === p.code && styles.pickerTextActive,
+                    dynamicStyles.text,
+                    settings.province === p.code && { color: '#ffffff', fontWeight: FONT_WEIGHTS.semibold },
                   ]}
                 >
                   {p.label}
@@ -112,63 +130,96 @@ export default function SettingsScreen() {
           </View>
         )}
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, dynamicStyles.divider]} />
 
         {/* Language */}
         <TouchableOpacity style={styles.settingRow} onPress={toggleLanguage}>
-          <Text style={styles.label}>{t('settings.language')}</Text>
-          <Text style={styles.value}>
+          <Text style={[styles.label, dynamicStyles.text]}>{t('settings.language')}</Text>
+          <Text style={[styles.value, dynamicStyles.primary]}>
             {settings.language === 'en' ? 'English' : 'Français'} ↔
           </Text>
         </TouchableOpacity>
+
+        <View style={[styles.divider, dynamicStyles.divider]} />
+
+        {/* Theme */}
+        <View style={styles.settingRow}>
+          <Text style={[styles.label, dynamicStyles.text]}>
+            {language === 'fr' ? 'Thème' : 'Theme'}
+          </Text>
+        </View>
+        <View style={styles.themeRow}>
+          {THEME_OPTIONS.map((opt) => (
+            <TouchableOpacity
+              key={opt.value}
+              style={[
+                styles.themeOption,
+                { borderColor: colors.border },
+                theme === opt.value && { borderColor: colors.primary, backgroundColor: colors.primary + '15' },
+              ]}
+              onPress={() => setTheme(opt.value)}
+            >
+              <Text style={styles.themeIcon}>{opt.icon}</Text>
+              <Text
+                style={[
+                  styles.themeLabel,
+                  dynamicStyles.text,
+                  theme === opt.value && { color: colors.primary, fontWeight: FONT_WEIGHTS.semibold },
+                ]}
+              >
+                {language === 'fr' ? opt.labelFr : opt.labelEn}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       {/* Data export */}
-      <Text style={styles.sectionTitle}>{t('settings.dataExport')}</Text>
-      <View style={styles.card}>
+      <Text style={[styles.sectionTitle, dynamicStyles.text]}>{t('settings.dataExport')}</Text>
+      <View style={[styles.card, dynamicStyles.card]}>
         <TouchableOpacity
           style={styles.exportRow}
           onPress={() => handleExport('receipts')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>{t('settings.exportReceiptsCsv')}</Text>
-          <Text style={styles.exportIcon}>↗</Text>
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.exportReceiptsCsv')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
         </TouchableOpacity>
-        <View style={styles.divider} />
+        <View style={[styles.divider, dynamicStyles.divider]} />
         <TouchableOpacity
           style={styles.exportRow}
           onPress={() => handleExport('mileage')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>{t('settings.exportMileageCsv')}</Text>
-          <Text style={styles.exportIcon}>↗</Text>
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.exportMileageCsv')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
         </TouchableOpacity>
-        <View style={styles.divider} />
+        <View style={[styles.divider, dynamicStyles.divider]} />
         <TouchableOpacity
           style={styles.exportRow}
           onPress={() => handleExport('backup')}
           disabled={exporting}
         >
-          <Text style={styles.exportLabel}>{t('settings.fullBackupJson')}</Text>
-          <Text style={styles.exportIcon}>↗</Text>
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.fullBackupJson')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
         </TouchableOpacity>
       </View>
 
       {/* App info */}
-      <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
-      <View style={styles.card}>
+      <Text style={[styles.sectionTitle, dynamicStyles.text]}>{t('settings.about')}</Text>
+      <View style={[styles.card, dynamicStyles.card]}>
         <View style={styles.settingRow}>
-          <Text style={styles.label}>{t('settings.version')}</Text>
-          <Text style={styles.value}>1.0.0</Text>
+          <Text style={[styles.label, dynamicStyles.text]}>{t('settings.version')}</Text>
+          <Text style={[styles.value, dynamicStyles.primary]}>1.0.0</Text>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, dynamicStyles.divider]} />
         <View style={styles.settingRow}>
-          <Text style={styles.label}>{t('settings.craTaxYear')}</Text>
-          <Text style={styles.value}>2026</Text>
+          <Text style={[styles.label, dynamicStyles.text]}>{t('settings.craTaxYear')}</Text>
+          <Text style={[styles.value, dynamicStyles.primary]}>2026</Text>
         </View>
       </View>
 
-      <Text style={styles.footer}>
+      <Text style={[styles.footer, dynamicStyles.muted]}>
         TaxSyncForDrivers Mobile{'\n'}
         Built for Canadian rideshare and delivery drivers.{'\n'}
         Data is stored locally on your device.
@@ -178,27 +229,23 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1 },
   content: { padding: SPACING.lg },
   title: {
     fontSize: FONT_SIZES.title,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.lg,
   },
   sectionTitle: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.text,
     marginTop: SPACING.xl,
     marginBottom: SPACING.md,
   },
   card: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   settingRow: {
     flexDirection: 'row',
@@ -206,25 +253,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: SPACING.sm,
   },
-  label: { fontSize: FONT_SIZES.md, color: COLORS.text },
-  value: { fontSize: FONT_SIZES.md, color: COLORS.primary, fontWeight: FONT_WEIGHTS.medium },
-  divider: { height: 1, backgroundColor: COLORS.border, marginVertical: SPACING.xs },
+  label: { fontSize: FONT_SIZES.md },
+  value: { fontSize: FONT_SIZES.md, fontWeight: FONT_WEIGHTS.medium },
+  divider: { height: 1, marginVertical: SPACING.xs },
   pickerList: { marginTop: SPACING.sm, marginBottom: SPACING.sm, gap: 2 },
   pickerItem: { paddingVertical: SPACING.sm, paddingHorizontal: SPACING.md, borderRadius: BORDER_RADIUS.sm },
-  pickerItemActive: { backgroundColor: COLORS.primary },
-  pickerText: { fontSize: FONT_SIZES.sm, color: COLORS.text },
-  pickerTextActive: { color: COLORS.white, fontWeight: FONT_WEIGHTS.semibold },
+  pickerText: { fontSize: FONT_SIZES.sm },
+  themeRow: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginBottom: SPACING.sm,
+  },
+  themeOption: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.sm,
+    borderWidth: 1.5,
+  },
+  themeIcon: {
+    fontSize: 20,
+    marginBottom: SPACING.xs,
+  },
+  themeLabel: {
+    fontSize: FONT_SIZES.xs,
+  },
   exportRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: SPACING.md,
   },
-  exportLabel: { fontSize: FONT_SIZES.md, color: COLORS.text },
-  exportIcon: { fontSize: FONT_SIZES.lg, color: COLORS.primary },
+  exportLabel: { fontSize: FONT_SIZES.md },
+  exportIcon: { fontSize: FONT_SIZES.lg },
   footer: {
     textAlign: 'center',
-    color: COLORS.muted,
     fontSize: FONT_SIZES.sm,
     marginTop: SPACING.xxl,
     lineHeight: 20,
