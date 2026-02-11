@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import CategoryPicker from '../components/CategoryPicker';
+import DatePickerField from '../components/DatePickerField';
 import { addReceipt, updateReceipt } from '../services/storageService';
 import { validateReceipt } from '../utils/validation';
 import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
@@ -113,12 +114,10 @@ export default function ReceiptAddScreen({ navigation, route }) {
           onChangeText={setAmount}
         />
 
-        <Text style={styles.label}>{t('receipts.date')}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
+        <DatePickerField
+          label={t('receipts.date')}
           value={date}
-          onChangeText={setDate}
+          onChange={setDate}
         />
 
         <Text style={styles.label}>{t('receipts.vendor')}</Text>

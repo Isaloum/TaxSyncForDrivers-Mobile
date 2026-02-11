@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -109,17 +109,22 @@ function SettingsStackNavigator() {
   );
 }
 
+const TAB_ICONS = {
+  Dashboard: { focused: 'grid', unfocused: 'grid-outline' },
+  Receipts: { focused: 'receipt', unfocused: 'receipt-outline' },
+  Mileage: { focused: 'car', unfocused: 'car-outline' },
+  Settings: { focused: 'settings', unfocused: 'settings-outline' },
+};
+
 function TabIcon({ label, focused }) {
-  const icons = {
-    Dashboard: focused ? '■' : '□',
-    Receipts: focused ? '◆' : '◇',
-    Mileage: focused ? '●' : '○',
-    Settings: focused ? '▲' : '△',
-  };
+  const iconSet = TAB_ICONS[label] || { focused: 'ellipse', unfocused: 'ellipse-outline' };
+  const iconName = focused ? iconSet.focused : iconSet.unfocused;
   return (
-    <Text style={{ fontSize: 18, color: focused ? COLORS.primary : COLORS.muted }}>
-      {icons[label] || '•'}
-    </Text>
+    <Ionicons
+      name={iconName}
+      size={22}
+      color={focused ? COLORS.primary : COLORS.muted}
+    />
   );
 }
 
