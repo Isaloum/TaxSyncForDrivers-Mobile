@@ -1,0 +1,43 @@
+// Light mode color palette
+export const LIGHT_COLORS = {
+  primary: '#0a7670',
+  primaryLight: '#14b8a6',
+  background: '#f8fafc',
+  card: '#ffffff',
+  success: '#10b981',
+  successLight: '#ecfdf5',
+  warning: '#f59e0b',
+  warningLight: '#fffbeb',
+  danger: '#ef4444',
+  dangerLight: '#fef2f2',
+  text: '#0f172a',
+  muted: '#64748b',
+  mutedLight: '#f1f5f9',
+  border: '#e2e8f0',
+  white: '#ffffff',
+  black: '#000000',
+  shadow: '#000000',
+  statusBar: 'dark',
+};
+
+// Dark mode color palette
+export const DARK_COLORS = {
+  primary: '#14b8a6',
+  primaryLight: '#0a7670',
+  background: '#0f172a',
+  card: '#1e293b',
+  success: '#34d399',
+  successLight: '#064e3b',
+  warning: '#fbbf24',
+  warningLight: '#78350f',
+  danger: '#f87171',
+  dangerLight: '#7f1d1d',
+  text: '#f1f5f9',
+  muted: '#94a3b8',
+  mutedLight: '#334155',
+  border: '#334155',
+  white: '#1e293b',
+  black: '#f8fafc',
+  shadow: '#000000',
+  statusBar: 'light',
+};
