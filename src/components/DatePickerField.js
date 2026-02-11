@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const MONTHS_EN = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -52,6 +53,7 @@ function formatDisplayDate(year, month, day, language) {
 
 export default function DatePickerField({ value, onChange, label }) {
   const { language } = useLanguage();
+  const { colors } = useTheme();
   const [visible, setVisible] = useState(false);
   const parsed = parseDate(value);
   const [selectedYear, setSelectedYear] = useState(parsed.year);
@@ -102,16 +104,16 @@ export default function DatePickerField({ value, onChange, label }) {
 
   return (
     <>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: colors.text }]}>{label}</Text>}
       <TouchableOpacity
-        style={styles.dateButton}
+        style={[styles.dateButton, { borderColor: colors.border, backgroundColor: colors.white }]}
         onPress={openPicker}
         accessibilityRole="button"
         accessibilityLabel={label || 'Date picker'}
       >
         <Text style={styles.calendarIcon}>📅</Text>
-        <Text style={styles.dateText}>{displayValue}</Text>
-        <Text style={styles.chevron}>▾</Text>
+        <Text style={[styles.dateText, { color: colors.text }]}>{displayValue}</Text>
+        <Text style={[styles.chevron, { color: colors.muted }]}>▾</Text>
       </TouchableOpacity>
 
       <Modal
@@ -121,15 +123,15 @@ export default function DatePickerField({ value, onChange, label }) {
         onRequestClose={cancel}
       >
         <View style={styles.overlay}>
-          <View style={styles.modal}>
-            <Text style={styles.modalTitle}>
+          <View style={[styles.modal, { backgroundColor: colors.white }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
               {language === 'fr' ? 'Choisir une date' : 'Choose a Date'}
             </Text>
 
             <View style={styles.pickerRow}>
               {/* Month */}
               <View style={styles.pickerColumn}>
-                <Text style={styles.pickerHeader}>
+                <Text style={[styles.pickerHeader, { color: colors.muted }]}>
                   {language === 'fr' ? 'Mois' : 'Month'}
                 </Text>
                 <ScrollView style={styles.scrollColumn} showsVerticalScrollIndicator={false}>
@@ -138,14 +140,15 @@ export default function DatePickerField({ value, onChange, label }) {
                       key={idx}
                       style={[
                         styles.pickerItem,
-                        selectedMonth === idx && styles.pickerItemActive,
+                        selectedMonth === idx && { backgroundColor: colors.primary },
                       ]}
                       onPress={() => setSelectedMonth(idx)}
                     >
                       <Text
                         style={[
                           styles.pickerItemText,
-                          selectedMonth === idx && styles.pickerItemTextActive,
+                          { color: colors.text },
+                          selectedMonth === idx && [styles.pickerItemTextActive, { color: colors.white }],
                         ]}
                       >
                         {m.substring(0, 3)}
@@ -157,7 +160,7 @@ export default function DatePickerField({ value, onChange, label }) {
 
               {/* Day */}
               <View style={styles.pickerColumn}>
-                <Text style={styles.pickerHeader}>
+                <Text style={[styles.pickerHeader, { color: colors.muted }]}>
                   {language === 'fr' ? 'Jour' : 'Day'}
                 </Text>
                 <ScrollView style={styles.scrollColumn} showsVerticalScrollIndicator={false}>
@@ -166,14 +169,15 @@ export default function DatePickerField({ value, onChange, label }) {
                       key={d}
                       style={[
                         styles.pickerItem,
-                        selectedDay === d && styles.pickerItemActive,
+                        selectedDay === d && { backgroundColor: colors.primary },
                       ]}
                       onPress={() => setSelectedDay(d)}
                     >
                       <Text
                         style={[
                           styles.pickerItemText,
-                          selectedDay === d && styles.pickerItemTextActive,
+                          { color: colors.text },
+                          selectedDay === d && [styles.pickerItemTextActive, { color: colors.white }],
                         ]}
                       >
                         {d}
@@ -185,7 +189,7 @@ export default function DatePickerField({ value, onChange, label }) {
 
               {/* Year */}
               <View style={styles.pickerColumn}>
-                <Text style={styles.pickerHeader}>
+                <Text style={[styles.pickerHeader, { color: colors.muted }]}>
                   {language === 'fr' ? 'Année' : 'Year'}
                 </Text>
                 <ScrollView style={styles.scrollColumn} showsVerticalScrollIndicator={false}>
@@ -194,14 +198,15 @@ export default function DatePickerField({ value, onChange, label }) {
                       key={y}
                       style={[
                         styles.pickerItem,
-                        selectedYear === y && styles.pickerItemActive,
+                        selectedYear === y && { backgroundColor: colors.primary },
                       ]}
                       onPress={() => setSelectedYear(y)}
                     >
                       <Text
                         style={[
                           styles.pickerItemText,
-                          selectedYear === y && styles.pickerItemTextActive,
+                          { color: colors.text },
+                          selectedYear === y && [styles.pickerItemTextActive, { color: colors.white }],
                         ]}
                       >
                         {y}
@@ -212,20 +217,20 @@ export default function DatePickerField({ value, onChange, label }) {
               </View>
             </View>
 
-            <View style={styles.previewRow}>
-              <Text style={styles.previewText}>
+            <View style={[styles.previewRow, { borderTopColor: colors.border }]}>
+              <Text style={[styles.previewText, { color: colors.primary }]}>
                 {formatDisplayDate(selectedYear, selectedMonth, Math.min(selectedDay, maxDay), language)}
               </Text>
             </View>
 
             <View style={styles.buttonRow}>
-              <TouchableOpacity style={styles.cancelButton} onPress={cancel}>
-                <Text style={styles.cancelButtonText}>
+              <TouchableOpacity style={[styles.cancelButton, { borderColor: colors.border }]} onPress={cancel}>
+                <Text style={[styles.cancelButtonText, { color: colors.muted }]}>
                   {language === 'fr' ? 'Annuler' : 'Cancel'}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.confirmButton} onPress={confirm}>
-                <Text style={styles.confirmButtonText}>
+              <TouchableOpacity style={[styles.confirmButton, { backgroundColor: colors.primary }]} onPress={confirm}>
+                <Text style={[styles.confirmButtonText, { color: colors.white }]}>
                   {language === 'fr' ? 'Confirmer' : 'Confirm'}
                 </Text>
               </TouchableOpacity>
@@ -241,7 +246,6 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
     marginBottom: SPACING.xs,
     marginTop: SPACING.sm,
   },
@@ -249,11 +253,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     marginBottom: SPACING.md,
-    backgroundColor: COLORS.white,
   },
   calendarIcon: {
     fontSize: FONT_SIZES.md,
@@ -262,11 +264,9 @@ const styles = StyleSheet.create({
   dateText: {
     flex: 1,
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
   },
   chevron: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
   },
   overlay: {
     flex: 1,
@@ -274,7 +274,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modal: {
-    backgroundColor: COLORS.white,
     borderTopLeftRadius: BORDER_RADIUS.lg,
     borderTopRightRadius: BORDER_RADIUS.lg,
     padding: SPACING.xl,
@@ -283,7 +282,6 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
     textAlign: 'center',
     marginBottom: SPACING.lg,
   },
@@ -297,7 +295,6 @@ const styles = StyleSheet.create({
   pickerHeader: {
     fontSize: FONT_SIZES.xs,
     fontWeight: FONT_WEIGHTS.medium,
-    color: COLORS.muted,
     textAlign: 'center',
     marginBottom: SPACING.xs,
     textTransform: 'uppercase',
@@ -312,15 +309,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 2,
   },
-  pickerItemActive: {
-    backgroundColor: COLORS.primary,
-  },
   pickerItemText: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
   },
   pickerItemTextActive: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
   },
   previewRow: {
@@ -328,12 +320,10 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     marginTop: SPACING.sm,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
   },
   previewText: {
     fontSize: FONT_SIZES.md,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.primary,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -345,24 +335,20 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     borderWidth: 1,
-    borderColor: COLORS.border,
     alignItems: 'center',
   },
   cancelButtonText: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.muted,
     fontWeight: FONT_WEIGHTS.medium,
   },
   confirmButton: {
     flex: 1,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
-    backgroundColor: COLORS.primary,
     alignItems: 'center',
   },
   confirmButtonText: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
   },
 });

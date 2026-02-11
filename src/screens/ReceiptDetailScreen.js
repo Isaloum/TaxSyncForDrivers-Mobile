@@ -4,8 +4,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getReceiptById, deleteReceipt } from '../services/storageService';
 import { RECEIPT_CATEGORIES } from '../constants/categories';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 function getCategoryLabel(key, language) {
   const cat = RECEIPT_CATEGORIES.find((c) => c.key === key);
@@ -15,6 +16,7 @@ function getCategoryLabel(key, language) {
 
 export default function ReceiptDetailScreen({ navigation, route }) {
   const { t, language } = useLanguage();
+  const { colors } = useTheme();
   const { receiptId } = route.params;
   const [receipt, setReceipt] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,8 +61,8 @@ export default function ReceiptDetailScreen({ navigation, route }) {
 
   if (!receipt) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.notFound}>{t('receipts.receiptNotFound')}</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.notFound, { color: colors.muted }]}>{t('receipts.receiptNotFound')}</Text>
       </View>
     );
   }
@@ -68,37 +70,37 @@ export default function ReceiptDetailScreen({ navigation, route }) {
   const { expense, metadata } = receipt;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.card}>
-        <Text style={styles.amount}>${expense.amount?.toFixed(2)}</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Text style={[styles.amount, { color: colors.text }]}>${expense.amount?.toFixed(2)}</Text>
 
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{getCategoryLabel(expense.category, language)}</Text>
+        <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+          <Text style={[styles.badgeText, { color: colors.white }]}>{getCategoryLabel(expense.category, language)}</Text>
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>{t('receipts.date')}</Text>
-          <Text style={styles.fieldValue}>{expense.date}</Text>
+          <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('receipts.date')}</Text>
+          <Text style={[styles.fieldValue, { color: colors.text }]}>{expense.date}</Text>
         </View>
 
         {expense.vendor ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('receipts.vendor')}</Text>
-            <Text style={styles.fieldValue}>{expense.vendor}</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('receipts.vendor')}</Text>
+            <Text style={[styles.fieldValue, { color: colors.text }]}>{expense.vendor}</Text>
           </View>
         ) : null}
 
         {expense.description ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('receipts.description')}</Text>
-            <Text style={styles.fieldValue}>{expense.description}</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('receipts.description')}</Text>
+            <Text style={[styles.fieldValue, { color: colors.text }]}>{expense.description}</Text>
           </View>
         ) : null}
 
         {metadata?.retainUntil ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('receipts.retainUntilCRA')}</Text>
-            <Text style={styles.fieldValue}>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('receipts.retainUntilCRA')}</Text>
+            <Text style={[styles.fieldValue, { color: colors.text }]}>
               {new Date(metadata.retainUntil).toLocaleDateString()}
             </Text>
           </View>
@@ -106,11 +108,11 @@ export default function ReceiptDetailScreen({ navigation, route }) {
       </View>
 
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <Text style={styles.editButtonText}>{t('receipts.editReceipt')}</Text>
+        <TouchableOpacity style={[styles.editButton, { backgroundColor: colors.primary }]} onPress={handleEdit}>
+          <Text style={[styles.editButtonText, { color: colors.white }]}>{t('receipts.editReceipt')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>{t('receipts.delete')}</Text>
+        <TouchableOpacity style={[styles.deleteButton, { backgroundColor: colors.white, borderColor: colors.danger }]} onPress={handleDelete}>
+          <Text style={[styles.deleteButtonText, { color: colors.danger }]}>{t('receipts.delete')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -118,33 +120,27 @@ export default function ReceiptDetailScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   content: { padding: SPACING.lg },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.background,
   },
   notFound: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.muted,
   },
   card: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.xl,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   amount: {
     fontSize: FONT_SIZES.title,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.md,
   },
   badge: {
-    backgroundColor: COLORS.primary,
     paddingVertical: SPACING.xs,
     paddingHorizontal: SPACING.md,
     borderRadius: BORDER_RADIUS.xl,
@@ -152,7 +148,6 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
   },
   badgeText: {
-    color: COLORS.white,
     fontSize: FONT_SIZES.sm,
     fontWeight: FONT_WEIGHTS.medium,
   },
@@ -161,14 +156,12 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     fontWeight: FONT_WEIGHTS.medium,
     marginBottom: SPACING.xs,
     textTransform: 'uppercase',
   },
   fieldValue: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
   },
   actions: {
     flexDirection: 'row',
@@ -177,27 +170,22 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
-    backgroundColor: COLORS.primary,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     alignItems: 'center',
   },
   editButtonText: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
   deleteButton: {
-    backgroundColor: COLORS.white,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     borderWidth: 1,
-    borderColor: COLORS.danger,
     alignItems: 'center',
     paddingHorizontal: SPACING.xl,
   },
   deleteButtonText: {
-    color: COLORS.danger,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },

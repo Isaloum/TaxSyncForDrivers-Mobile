@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -13,13 +14,14 @@ const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
  *   height: chart height (default 140)
  */
 export default function MonthlyTrendChart({ monthlyData = [], year, color, height = 140 }) {
+  const { colors } = useTheme();
   const data = monthlyData.length === 12 ? monthlyData : new Array(12).fill(0);
   const maxValue = Math.max(...data, 1);
-  const barColor = color || COLORS.primary;
+  const barColor = color || colors.primary;
 
   return (
-    <View style={styles.container}>
-      {year && <Text style={styles.yearLabel}>{year}</Text>}
+    <View style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {year && <Text style={[styles.yearLabel, { color: colors.muted }]}>{year}</Text>}
       <View style={[styles.chartArea, { height }]}>
         {data.map((value, i) => {
           const barHeight = (value / maxValue) * (height - 24);
@@ -30,11 +32,11 @@ export default function MonthlyTrendChart({ monthlyData = [], year, color, heigh
                   styles.bar,
                   {
                     height: Math.max(barHeight, 2),
-                    backgroundColor: value > 0 ? barColor : COLORS.border,
+                    backgroundColor: value > 0 ? barColor : colors.border,
                   },
                 ]}
               />
-              <Text style={styles.monthLabel}>{MONTH_LABELS[i]}</Text>
+              <Text style={[styles.monthLabel, { color: colors.muted }]}>{MONTH_LABELS[i]}</Text>
             </View>
           );
         })}
@@ -45,16 +47,13 @@ export default function MonthlyTrendChart({ monthlyData = [], year, color, heigh
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   yearLabel: {
     fontSize: FONT_SIZES.sm,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.muted,
     marginBottom: SPACING.sm,
   },
   chartArea: {
@@ -76,7 +75,6 @@ const styles = StyleSheet.create({
   },
   monthLabel: {
     fontSize: 8,
-    color: COLORS.muted,
     marginTop: 3,
     textAlign: 'center',
   },

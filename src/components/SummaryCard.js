@@ -1,16 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function SummaryCard({ label, value, unit, color }) {
-  const accentColor = color || COLORS.primary;
+  const { colors } = useTheme();
+  const accentColor = color || colors.primary;
 
   return (
-    <View style={[styles.card, { borderLeftColor: accentColor }]}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={[styles.card, { borderLeftColor: accentColor }, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Text style={[styles.label, { color: colors.muted }]}>{label}</Text>
       <View style={styles.valueRow}>
         <Text style={[styles.value, { color: accentColor }]}>{value}</Text>
-        {unit ? <Text style={styles.unit}>{unit}</Text> : null}
+        {unit ? <Text style={[styles.unit, { color: colors.muted }]}>{unit}</Text> : null}
       </View>
     </View>
   );
@@ -19,16 +21,13 @@ export default function SummaryCard({ label, value, unit, color }) {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     borderLeftWidth: 4,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   label: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     fontWeight: FONT_WEIGHTS.medium,
     marginBottom: SPACING.xs,
   },
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
   },
   unit: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
     marginLeft: SPACING.xs,
   },
 });

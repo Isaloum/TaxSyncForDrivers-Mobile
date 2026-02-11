@@ -14,11 +14,13 @@ import SummaryCard from '../components/SummaryCard';
 import TripCard from '../components/TripCard';
 import EmptyState from '../components/EmptyState';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function MileageListScreen({ navigation }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +56,7 @@ export default function MileageListScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={trips}
         keyExtractor={(item) => item.id}
@@ -62,7 +64,7 @@ export default function MileageListScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={COLORS.primary}
+            tintColor={colors.primary}
           />
         }
         ListHeaderComponent={
@@ -73,24 +75,24 @@ export default function MileageListScreen({ navigation }) {
                   label={t('mileage.total')}
                   value={String(summary.totalKm)}
                   unit="km"
-                  color={COLORS.primary}
+                  color={colors.primary}
                 />
                 <SummaryCard
                   label={t('mileage.businessPercent')}
                   value={`${summary.businessPercent}%`}
-                  color={COLORS.success}
+                  color={colors.success}
                 />
               </View>
               <View style={styles.summaryRow}>
                 <SummaryCard
                   label={t('mileage.deductionEst')}
                   value={`$${summary.estimatedDeduction.toFixed(2)}`}
-                  color={COLORS.warning}
+                  color={colors.warning}
                 />
                 <SummaryCard
                   label={t('mileage.trips')}
                   value={String(summary.totalTrips)}
-                  color={COLORS.primaryLight}
+                  color={colors.primaryLight}
                 />
               </View>
             </View>
@@ -117,10 +119,10 @@ export default function MileageListScreen({ navigation }) {
 
       {trips.length > 0 && (
         <TouchableOpacity
-          style={styles.fab}
+          style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
           onPress={() => navigation.navigate('MileageAdd')}
         >
-          <Text style={styles.fabText}>+</Text>
+          <Text style={[styles.fabText, { color: colors.white }]}>+</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -128,7 +130,7 @@ export default function MileageListScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   list: { padding: SPACING.lg },
   summarySection: {
     marginBottom: SPACING.lg,
@@ -145,17 +147,14 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
-    shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
   fabText: {
-    color: COLORS.white,
     fontSize: FONT_SIZES.xxl,
     fontWeight: FONT_WEIGHTS.bold,
     marginTop: -2,

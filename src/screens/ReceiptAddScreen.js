@@ -15,11 +15,13 @@ import CategoryPicker from '../components/CategoryPicker';
 import DatePickerField from '../components/DatePickerField';
 import { addReceipt, updateReceipt } from '../services/storageService';
 import { validateReceipt } from '../utils/validation';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function ReceiptAddScreen({ navigation, route }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const editMode = route.params?.editMode || false;
   const existing = route.params?.receipt || null;
   const capturedPhotoUri = route.params?.capturedPhotoUri || null;
@@ -84,11 +86,11 @@ export default function ReceiptAddScreen({ navigation, route }) {
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
         {errors.length > 0 && (
-          <View style={styles.errorBox}>
+          <View style={[styles.errorBox, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
             {errors.map((e, i) => (
-              <Text key={i} style={styles.errorText}>{e}</Text>
+              <Text key={i} style={[styles.errorText, { color: colors.danger }]}>{e}</Text>
             ))}
           </View>
         )}
@@ -100,14 +102,14 @@ export default function ReceiptAddScreen({ navigation, route }) {
               style={styles.removePhotoButton}
               onPress={() => setPhotoUri(null)}
             >
-              <Text style={styles.removePhotoText}>Remove Photo</Text>
+              <Text style={[styles.removePhotoText, { color: colors.danger }]}>Remove Photo</Text>
             </TouchableOpacity>
           </View>
         )}
 
-        <Text style={styles.label}>{t('receipts.amount')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('receipts.amount')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="0.00"
           keyboardType="decimal-pad"
           value={amount}
@@ -120,9 +122,9 @@ export default function ReceiptAddScreen({ navigation, route }) {
           onChange={setDate}
         />
 
-        <Text style={styles.label}>{t('receipts.vendor')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('receipts.vendor')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="e.g., Shell, Costco"
           value={vendor}
           onChangeText={setVendor}
@@ -130,9 +132,9 @@ export default function ReceiptAddScreen({ navigation, route }) {
 
         <CategoryPicker value={category} onChange={setCategory} />
 
-        <Text style={styles.label}>{t('receipts.description')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('receipts.description')}</Text>
         <TextInput
-          style={[styles.input, styles.multiline]}
+          style={[styles.input, styles.multiline, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder={t('receipts.optionalNotes')}
           value={description}
           onChangeText={setDescription}
@@ -140,11 +142,11 @@ export default function ReceiptAddScreen({ navigation, route }) {
         />
 
         <TouchableOpacity
-          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+          style={[styles.saveButton, saving && styles.saveButtonDisabled, { backgroundColor: colors.primary }]}
           onPress={onSave}
           disabled={saving}
         >
-          <Text style={styles.saveButtonText}>
+          <Text style={[styles.saveButtonText, { color: colors.white }]}>
             {saving ? t('receipts.saving') : editMode ? t('receipts.updateReceipt') : t('receipts.saveReceipt')}
           </Text>
         </TouchableOpacity>
@@ -155,35 +157,29 @@ export default function ReceiptAddScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   content: { padding: SPACING.lg },
   label: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
     marginBottom: SPACING.xs,
     marginTop: SPACING.sm,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     marginBottom: SPACING.md,
     fontSize: FONT_SIZES.md,
-    backgroundColor: COLORS.white,
-    color: COLORS.text,
   },
   multiline: { height: 80, textAlignVertical: 'top' },
   saveButton: {
-    backgroundColor: COLORS.primary,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.lg,
   },
   saveButtonDisabled: { opacity: 0.6 },
   saveButtonText: {
-    color: COLORS.white,
     textAlign: 'center',
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
@@ -204,19 +200,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
   },
   removePhotoText: {
-    color: COLORS.danger,
     fontSize: FONT_SIZES.sm,
   },
   errorBox: {
-    backgroundColor: COLORS.dangerLight,
     borderWidth: 1,
-    borderColor: COLORS.danger,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     marginBottom: SPACING.md,
   },
   errorText: {
-    color: COLORS.danger,
     fontSize: FONT_SIZES.sm,
   },
 });

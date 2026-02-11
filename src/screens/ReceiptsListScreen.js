@@ -11,11 +11,13 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { getReceipts } from '../services/storageService';
 import ReceiptCard from '../components/ReceiptCard';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function ReceiptsListScreen({ navigation }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -46,23 +48,23 @@ export default function ReceiptsListScreen({ navigation }) {
 
   if (loading && receipts.length === 0) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.headerButtons}>
         <TouchableOpacity
-          style={[styles.addButton, { flex: 1 }]}
+          style={[styles.addButton, { flex: 1 }, { backgroundColor: colors.primary }]}
           onPress={() => navigation.navigate('ReceiptAdd')}
         >
-          <Text style={styles.addButtonText}>{t('receipts.addReceipt')}</Text>
+          <Text style={[styles.addButtonText, { color: colors.white }]}>{t('receipts.addReceipt')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.scanButton}
+          style={[styles.scanButton, { backgroundColor: colors.primaryLight }]}
           onPress={() => navigation.navigate('CameraCapture')}
         >
           <Text style={styles.scanButtonText}>📷</Text>
@@ -76,13 +78,13 @@ export default function ReceiptsListScreen({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={COLORS.primary}
+            tintColor={colors.primary}
           />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>{t('receipts.noReceipts')}</Text>
-            <Text style={styles.emptySubtitle}>
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('receipts.noReceipts')}</Text>
+            <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
               {t('receipts.noReceiptsHint')}
             </Text>
           </View>
@@ -101,12 +103,11 @@ export default function ReceiptsListScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: SPACING.lg, backgroundColor: COLORS.background },
+  container: { flex: 1, padding: SPACING.lg, },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.background,
   },
   headerButtons: {
     flexDirection: 'row',
@@ -114,18 +115,15 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   addButton: {
-    backgroundColor: COLORS.primary,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
   },
   addButtonText: {
-    color: COLORS.white,
     textAlign: 'center',
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
   scanButton: {
-    backgroundColor: COLORS.primaryLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     paddingHorizontal: SPACING.lg,
@@ -141,12 +139,10 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   emptySubtitle: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
     textAlign: 'center',
   },
 });
