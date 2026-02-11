@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RECEIPT_CATEGORIES } from '../constants/categories';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 function getCategoryLabel(key) {
   const cat = RECEIPT_CATEGORIES.find((c) => c.key === key);
@@ -9,22 +10,23 @@ function getCategoryLabel(key) {
 }
 
 export default function ReceiptCard({ receipt, onPress }) {
+  const { colors } = useTheme();
   const { expense } = receipt;
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={onPress}>
       <View style={styles.header}>
-        <Text style={styles.amount}>${expense.amount?.toFixed(2)}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{getCategoryLabel(expense.category)}</Text>
+        <Text style={[styles.amount, { color: colors.text }]}>${expense.amount?.toFixed(2)}</Text>
+        <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+          <Text style={[styles.badgeText, { color: colors.white }]}>{getCategoryLabel(expense.category)}</Text>
         </View>
       </View>
       {expense.vendor ? (
-        <Text style={styles.vendor}>{expense.vendor}</Text>
+        <Text style={[styles.vendor, { color: colors.text }]}>{expense.vendor}</Text>
       ) : null}
-      <Text style={styles.date}>{expense.date}</Text>
+      <Text style={[styles.date, { color: colors.muted }]}>{expense.date}</Text>
       {expense.description ? (
-        <Text style={styles.description} numberOfLines={2}>
+        <Text style={[styles.description, { color: colors.muted }]} numberOfLines={2}>
           {expense.description}
         </Text>
       ) : null}
@@ -36,10 +38,8 @@ const styles = StyleSheet.create({
   card: {
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.md,
-    backgroundColor: COLORS.card,
     marginBottom: SPACING.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   header: {
     flexDirection: 'row',
@@ -49,33 +49,27 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: FONT_SIZES.xl,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
   },
   badge: {
-    backgroundColor: COLORS.primary,
     paddingVertical: SPACING.xs,
     paddingHorizontal: SPACING.sm,
     borderRadius: BORDER_RADIUS.xl,
   },
   badgeText: {
-    color: COLORS.white,
     fontSize: FONT_SIZES.xs,
     fontWeight: FONT_WEIGHTS.medium,
   },
   vendor: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
     marginTop: SPACING.xs,
     fontWeight: FONT_WEIGHTS.medium,
   },
   date: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
     marginTop: SPACING.xs,
   },
   description: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
     marginTop: SPACING.sm,
   },
 });

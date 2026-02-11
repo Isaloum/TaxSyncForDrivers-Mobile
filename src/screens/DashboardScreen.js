@@ -12,11 +12,13 @@ import {
 import SummaryCard from '../components/SummaryCard';
 import PieChart from '../components/PieChart';
 import MonthlyTrendChart from '../components/MonthlyTrendChart';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function DashboardScreen({ navigation }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const currentYear = new Date().getFullYear();
 
   const [stats, setStats] = useState({
@@ -82,29 +84,29 @@ export default function DashboardScreen({ navigation }) {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.content}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          tintColor={COLORS.primary}
+          tintColor={colors.primary}
         />
       }
     >
-      <Text style={styles.title}>{t('dashboard.title')}</Text>
+      <Text style={[styles.title, { color: colors.text }]}>{t('dashboard.title')}</Text>
 
       {/* Summary cards */}
       <View style={styles.row}>
         <SummaryCard
           label={t('dashboard.totalExpenses')}
           value={`$${stats.totalExpenses.toFixed(2)}`}
-          color={COLORS.primary}
+          color={colors.primary}
         />
         <SummaryCard
           label={t('dashboard.receipts')}
           value={String(stats.receiptCount)}
-          color={COLORS.primaryLight}
+          color={colors.primaryLight}
         />
       </View>
       <View style={styles.row}>
@@ -112,62 +114,62 @@ export default function DashboardScreen({ navigation }) {
           label={t('dashboard.businessKm')}
           value={String(stats.totalKm)}
           unit="km"
-          color={COLORS.success}
+          color={colors.success}
         />
         <SummaryCard
           label={t('dashboard.mileageDeduction')}
           value={`$${stats.estimatedDeduction.toFixed(0)}`}
-          color={COLORS.warning}
+          color={colors.warning}
         />
       </View>
 
       {/* Category breakdown */}
       {categoryData.length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('dashboard.expensesByCategory')}</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('dashboard.expensesByCategory')}</Text>
           <PieChart data={categoryData} />
         </View>
       )}
 
       {/* Monthly expenses trend */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('dashboard.monthlyExpenses')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('dashboard.monthlyExpenses')}</Text>
         <MonthlyTrendChart
           monthlyData={monthlyExpenses}
           year={String(currentYear)}
-          color={COLORS.primary}
+          color={colors.primary}
         />
       </View>
 
       {/* Monthly mileage trend */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('dashboard.monthlyMileage')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('dashboard.monthlyMileage')}</Text>
         <MonthlyTrendChart
           monthlyData={monthlyKm}
           year={String(currentYear)}
-          color={COLORS.success}
+          color={colors.success}
         />
       </View>
 
       {/* GST/QST summary */}
       {taxSummary && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('dashboard.taxSummary')}</Text>
-          <View style={styles.taxCard}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('dashboard.taxSummary')}</Text>
+          <View style={[styles.taxCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.taxRow}>
-              <Text style={styles.taxLabel}>{t('dashboard.gst')}</Text>
-              <Text style={styles.taxValue}>${taxSummary.gstPaid.toFixed(2)}</Text>
+              <Text style={[styles.taxLabel, { color: colors.text }]}>{t('dashboard.gst')}</Text>
+              <Text style={[styles.taxValue, { color: colors.text }]}>${taxSummary.gstPaid.toFixed(2)}</Text>
             </View>
             {taxSummary.qstPaid > 0 && (
               <View style={styles.taxRow}>
-                <Text style={styles.taxLabel}>{t('dashboard.qst')}</Text>
-                <Text style={styles.taxValue}>${taxSummary.qstPaid.toFixed(2)}</Text>
+                <Text style={[styles.taxLabel, { color: colors.text }]}>{t('dashboard.qst')}</Text>
+                <Text style={[styles.taxValue, { color: colors.text }]}>${taxSummary.qstPaid.toFixed(2)}</Text>
               </View>
             )}
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: colors.border }]} />
             <View style={styles.taxRow}>
-              <Text style={[styles.taxLabel, styles.taxTotal]}>{t('dashboard.totalTaxPaid')}</Text>
-              <Text style={[styles.taxValue, styles.taxTotal]}>
+              <Text style={[styles.taxLabel, styles.taxTotal, { color: colors.text }]}>{t('dashboard.totalTaxPaid')}</Text>
+              <Text style={[styles.taxValue, styles.taxTotal, { color: colors.text }]}>
                 ${taxSummary.totalTaxPaid.toFixed(2)}
               </Text>
             </View>
@@ -177,34 +179,34 @@ export default function DashboardScreen({ navigation }) {
 
       {/* Quick actions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('dashboard.quickActions')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('dashboard.quickActions')}</Text>
         <View style={styles.actionsRow}>
           <TouchableOpacity
-            style={styles.actionButton}
+            style={[styles.actionButton, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={() =>
               navigation.navigate('ReceiptsTab', { screen: 'ReceiptAdd' })
             }
           >
-            <Text style={styles.actionIcon}>+</Text>
-            <Text style={styles.actionText}>{t('dashboard.receipt')}</Text>
+            <Text style={[styles.actionIcon, { color: colors.primary }]}>+</Text>
+            <Text style={[styles.actionText, { color: colors.primary }]}>{t('dashboard.receipt')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.actionButton}
+            style={[styles.actionButton, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={() =>
               navigation.navigate('MileageTab', { screen: 'MileageAdd' })
             }
           >
-            <Text style={styles.actionIcon}>+</Text>
-            <Text style={styles.actionText}>{t('dashboard.trip')}</Text>
+            <Text style={[styles.actionIcon, { color: colors.primary }]}>+</Text>
+            <Text style={[styles.actionText, { color: colors.primary }]}>{t('dashboard.trip')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.actionButton}
+            style={[styles.actionButton, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={() =>
               navigation.navigate('ReceiptsTab', { screen: 'CameraCapture' })
             }
           >
-            <Text style={styles.actionIcon}>📷</Text>
-            <Text style={styles.actionText}>{t('dashboard.scan')}</Text>
+            <Text style={[styles.actionIcon, { color: colors.primary }]}>📷</Text>
+            <Text style={[styles.actionText, { color: colors.primary }]}>{t('dashboard.scan')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -215,12 +217,11 @@ export default function DashboardScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   content: { padding: SPACING.lg },
   title: {
     fontSize: FONT_SIZES.title,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.lg,
   },
   row: {
@@ -234,15 +235,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.text,
     marginBottom: SPACING.md,
   },
   taxCard: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   taxRow: {
     flexDirection: 'row',
@@ -251,18 +249,15 @@ const styles = StyleSheet.create({
   },
   taxLabel: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
   },
   taxValue: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
   },
   taxTotal: {
     fontWeight: FONT_WEIGHTS.bold,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.border,
     marginVertical: SPACING.xs,
   },
   actionsRow: {
@@ -271,20 +266,16 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: COLORS.card,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.md,
     borderWidth: 1,
-    borderColor: COLORS.border,
     alignItems: 'center',
   },
   actionIcon: {
     fontSize: FONT_SIZES.xxl,
-    color: COLORS.primary,
     marginBottom: SPACING.xs,
   },
   actionText: {
-    color: COLORS.primary,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
   },

@@ -4,11 +4,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getTripById, deleteTrip } from '../services/storageService';
 import { calculateSimplifiedDeduction } from '../utils/mileageCalculations';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function MileageDetailScreen({ navigation, route }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const { tripId } = route.params;
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,8 +55,8 @@ export default function MileageDetailScreen({ navigation, route }) {
 
   if (!trip) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.notFound}>{t('mileage.tripNotFound')}</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.notFound, { color: colors.muted }]}>{t('mileage.tripNotFound')}</Text>
       </View>
     );
   }
@@ -64,20 +66,20 @@ export default function MileageDetailScreen({ navigation, route }) {
     : 0;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.card}>
-        <Text style={styles.destination}>{trip.destination}</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Text style={[styles.destination, { color: colors.text }]}>{trip.destination}</Text>
 
         <View
           style={[
             styles.typeBadge,
-            trip.isBusinessTrip ? styles.businessBadge : styles.personalBadge,
+            { backgroundColor: trip.isBusinessTrip ? colors.successLight : colors.mutedLight },
           ]}
         >
           <Text
             style={[
               styles.typeText,
-              trip.isBusinessTrip ? styles.businessText : styles.personalText,
+              { color: trip.isBusinessTrip ? colors.success : colors.muted },
             ]}
           >
             {trip.isBusinessTrip ? t('mileage.business') : t('mileage.personal')}
@@ -85,63 +87,63 @@ export default function MileageDetailScreen({ navigation, route }) {
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>{t('mileage.date')}</Text>
-          <Text style={styles.fieldValue}>{trip.date}</Text>
+          <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('mileage.date')}</Text>
+          <Text style={[styles.fieldValue, { color: colors.text }]}>{trip.date}</Text>
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.fieldLabel}>{t('mileage.purpose')}</Text>
-          <Text style={styles.fieldValue}>{trip.purpose}</Text>
+          <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('mileage.purpose')}</Text>
+          <Text style={[styles.fieldValue, { color: colors.text }]}>{trip.purpose}</Text>
         </View>
 
         <View style={styles.odometerRow}>
-          <View style={styles.odometerBox}>
-            <Text style={styles.odometerLabel}>{t('mileage.start')}</Text>
-            <Text style={styles.odometerValue}>{trip.startOdometer} km</Text>
+          <View style={[styles.odometerBox, { backgroundColor: colors.background }]}>
+            <Text style={[styles.odometerLabel, { color: colors.muted }]}>{t('mileage.start')}</Text>
+            <Text style={[styles.odometerValue, { color: colors.text }]}>{trip.startOdometer} km</Text>
           </View>
-          <Text style={styles.arrow}>→</Text>
-          <View style={styles.odometerBox}>
-            <Text style={styles.odometerLabel}>{t('mileage.end')}</Text>
-            <Text style={styles.odometerValue}>{trip.endOdometer} km</Text>
+          <Text style={[styles.arrow, { color: colors.muted }]}>→</Text>
+          <View style={[styles.odometerBox, { backgroundColor: colors.background }]}>
+            <Text style={[styles.odometerLabel, { color: colors.muted }]}>{t('mileage.end')}</Text>
+            <Text style={[styles.odometerValue, { color: colors.text }]}>{trip.endOdometer} km</Text>
           </View>
         </View>
 
-        <View style={styles.distanceBox}>
-          <Text style={styles.distanceLabel}>{t('mileage.distance')}</Text>
-          <Text style={styles.distanceValue}>{trip.distance} km</Text>
+        <View style={[styles.distanceBox, { backgroundColor: colors.successLight }]}>
+          <Text style={[styles.distanceLabel, { color: colors.success }]}>{t('mileage.distance')}</Text>
+          <Text style={[styles.distanceValue, { color: colors.success }]}>{trip.distance} km</Text>
         </View>
 
         {trip.isBusinessTrip && trip.clientName ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('mileage.clientName')}</Text>
-            <Text style={styles.fieldValue}>{trip.clientName}</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('mileage.clientName')}</Text>
+            <Text style={[styles.fieldValue, { color: colors.text }]}>{trip.clientName}</Text>
           </View>
         ) : null}
 
         {trip.notes ? (
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>{t('mileage.notes')}</Text>
-            <Text style={styles.fieldValue}>{trip.notes}</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>{t('mileage.notes')}</Text>
+            <Text style={[styles.fieldValue, { color: colors.text }]}>{trip.notes}</Text>
           </View>
         ) : null}
 
         {trip.isBusinessTrip && (
-          <View style={styles.deductionBox}>
-            <Text style={styles.deductionLabel}>{t('mileage.estimatedDeduction')}</Text>
-            <Text style={styles.deductionValue}>
+          <View style={[styles.deductionBox, { backgroundColor: colors.warningLight }]}>
+            <Text style={[styles.deductionLabel, { color: colors.warning }]}>{t('mileage.estimatedDeduction')}</Text>
+            <Text style={[styles.deductionValue, { color: colors.warning }]}>
               ${deductionEstimate.toFixed(2)}
             </Text>
-            <Text style={styles.deductionNote}>{t('mileage.craSimplified')}</Text>
+            <Text style={[styles.deductionNote, { color: colors.muted }]}>{t('mileage.craSimplified')}</Text>
           </View>
         )}
       </View>
 
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-          <Text style={styles.editButtonText}>{t('mileage.editTrip')}</Text>
+        <TouchableOpacity style={[styles.editButton, { backgroundColor: colors.primary }]} onPress={handleEdit}>
+          <Text style={[styles.editButtonText, { color: colors.white }]}>{t('mileage.editTrip')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>{t('mileage.delete')}</Text>
+        <TouchableOpacity style={[styles.deleteButton, { backgroundColor: colors.white, borderColor: colors.danger }]} onPress={handleDelete}>
+          <Text style={[styles.deleteButtonText, { color: colors.danger }]}>{t('mileage.delete')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -149,29 +151,24 @@ export default function MileageDetailScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   content: { padding: SPACING.lg },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.background,
   },
   notFound: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.muted,
   },
   card: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.xl,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   destination: {
     fontSize: FONT_SIZES.xxl,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   typeBadge: {
@@ -181,27 +178,21 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: SPACING.lg,
   },
-  businessBadge: { backgroundColor: COLORS.successLight },
-  personalBadge: { backgroundColor: COLORS.mutedLight },
   typeText: {
     fontSize: FONT_SIZES.sm,
     fontWeight: FONT_WEIGHTS.medium,
   },
-  businessText: { color: COLORS.success },
-  personalText: { color: COLORS.muted },
   field: {
     marginBottom: SPACING.md,
   },
   fieldLabel: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     fontWeight: FONT_WEIGHTS.medium,
     marginBottom: SPACING.xs,
     textTransform: 'uppercase',
   },
   fieldValue: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
   },
   odometerRow: {
     flexDirection: 'row',
@@ -211,27 +202,22 @@ const styles = StyleSheet.create({
   },
   odometerBox: {
     flex: 1,
-    backgroundColor: COLORS.background,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     alignItems: 'center',
   },
   odometerLabel: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     marginBottom: SPACING.xs,
   },
   odometerValue: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.text,
   },
   arrow: {
     fontSize: FONT_SIZES.xl,
-    color: COLORS.muted,
   },
   distanceBox: {
-    backgroundColor: COLORS.successLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     flexDirection: 'row',
@@ -241,34 +227,28 @@ const styles = StyleSheet.create({
   },
   distanceLabel: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.success,
     fontWeight: FONT_WEIGHTS.medium,
   },
   distanceValue: {
     fontSize: FONT_SIZES.lg,
-    color: COLORS.success,
     fontWeight: FONT_WEIGHTS.bold,
   },
   deductionBox: {
-    backgroundColor: COLORS.warningLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.sm,
   },
   deductionLabel: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.warning,
     fontWeight: FONT_WEIGHTS.medium,
   },
   deductionValue: {
     fontSize: FONT_SIZES.xl,
     fontWeight: FONT_WEIGHTS.bold,
-    color: COLORS.warning,
     marginTop: SPACING.xs,
   },
   deductionNote: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     marginTop: SPACING.xs,
   },
   actions: {
@@ -278,27 +258,22 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
-    backgroundColor: COLORS.primary,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     alignItems: 'center',
   },
   editButtonText: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
   deleteButton: {
-    backgroundColor: COLORS.white,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     borderWidth: 1,
-    borderColor: COLORS.danger,
     alignItems: 'center',
     paddingHorizontal: SPACING.xl,
   },
   deleteButtonText: {
-    color: COLORS.danger,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },

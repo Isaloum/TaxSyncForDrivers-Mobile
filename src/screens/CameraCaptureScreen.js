@@ -8,9 +8,11 @@ import {
   View,
 } from 'react-native';
 import { Camera } from 'expo-camera';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function CameraCaptureScreen({ navigation }) {
+  const { colors } = useTheme();
   const cameraRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [photo, setPhoto] = useState(null);
@@ -49,21 +51,21 @@ export default function CameraCaptureScreen({ navigation }) {
 
   if (hasPermission === null) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.message}>Requesting camera permission...</Text>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.message, { color: colors.text }]}>Requesting camera permission...</Text>
       </View>
     );
   }
 
   if (hasPermission === false) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.message}>Camera access is required to scan receipts.</Text>
-        <Text style={styles.submessage}>
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <Text style={[styles.message, { color: colors.text }]}>Camera access is required to scan receipts.</Text>
+        <Text style={[styles.submessage, { color: colors.muted }]}>
           Please enable camera permissions in your device settings.
         </Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+        <TouchableOpacity style={[styles.backButton, { backgroundColor: colors.primary }]} onPress={() => navigation.goBack()}>
+          <Text style={[styles.backButtonText, { color: colors.white }]}>Go Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -71,14 +73,14 @@ export default function CameraCaptureScreen({ navigation }) {
 
   if (photo) {
     return (
-      <View style={styles.previewContainer}>
+      <View style={[styles.previewContainer, { backgroundColor: colors.black }]}>
         <Image source={{ uri: photo.uri }} style={styles.preview} />
-        <View style={styles.previewActions}>
+        <View style={[styles.previewActions, { backgroundColor: colors.black }]}>
           <TouchableOpacity style={styles.retakeButton} onPress={retake}>
-            <Text style={styles.retakeText}>Retake</Text>
+            <Text style={[styles.retakeText, { color: colors.white }]}>Retake</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.useButton} onPress={usePhoto}>
-            <Text style={styles.useText}>Use Photo</Text>
+          <TouchableOpacity style={[styles.useButton, { backgroundColor: colors.primary }]} onPress={usePhoto}>
+            <Text style={[styles.useText, { color: colors.white }]}>Use Photo</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -86,7 +88,7 @@ export default function CameraCaptureScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.cameraContainer}>
+    <View style={[styles.cameraContainer, { backgroundColor: colors.black }]}>
       <Camera
         ref={cameraRef}
         style={styles.camera}
@@ -97,16 +99,16 @@ export default function CameraCaptureScreen({ navigation }) {
           <Text style={styles.hint}>Position receipt within the frame</Text>
         </View>
       </Camera>
-      <View style={styles.controls}>
+      <View style={[styles.controls, { backgroundColor: colors.black }]}>
         <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={[styles.cancelText, { color: colors.white }]}>Cancel</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.captureButton, capturing && styles.capturingButton]}
           onPress={takePhoto}
           disabled={capturing}
         >
-          <View style={styles.captureInner} />
+          <View style={[styles.captureInner, { backgroundColor: colors.white }]} />
         </TouchableOpacity>
         <View style={{ width: 60 }} />
       </View>
@@ -120,33 +122,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: SPACING.xl,
-    backgroundColor: COLORS.background,
   },
   message: {
     fontSize: FONT_SIZES.lg,
     fontWeight: FONT_WEIGHTS.semibold,
-    color: COLORS.text,
     textAlign: 'center',
     marginBottom: SPACING.sm,
   },
   submessage: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.muted,
     textAlign: 'center',
     marginBottom: SPACING.xl,
   },
   backButton: {
-    backgroundColor: COLORS.primary,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xl,
     borderRadius: BORDER_RADIUS.sm,
   },
   backButtonText: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
-  cameraContainer: { flex: 1, backgroundColor: COLORS.black },
+  cameraContainer: { flex: 1, },
   camera: { flex: 1 },
   overlay: {
     flex: 1,
@@ -172,10 +169,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: SPACING.xl,
     paddingHorizontal: SPACING.xxl,
-    backgroundColor: COLORS.black,
   },
   cancelButton: { width: 60 },
-  cancelText: { color: COLORS.white, fontSize: FONT_SIZES.md },
+  cancelText: { fontSize: FONT_SIZES.md },
   captureButton: {
     width: 72,
     height: 72,
@@ -189,16 +185,14 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: COLORS.white,
   },
-  previewContainer: { flex: 1, backgroundColor: COLORS.black },
+  previewContainer: { flex: 1, },
   preview: { flex: 1, resizeMode: 'contain' },
   previewActions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: SPACING.xl,
     paddingHorizontal: SPACING.lg,
-    backgroundColor: COLORS.black,
   },
   retakeButton: {
     backgroundColor: 'rgba(255,255,255,0.2)',
@@ -207,18 +201,15 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.sm,
   },
   retakeText: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
   useButton: {
-    backgroundColor: COLORS.primary,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xxl,
     borderRadius: BORDER_RADIUS.sm,
   },
   useText: {
-    color: COLORS.white,
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },

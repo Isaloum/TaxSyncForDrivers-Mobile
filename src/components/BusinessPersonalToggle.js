@@ -1,27 +1,37 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Trip Type</Text>
+      <Text style={[styles.label, { color: colors.text }]}>Trip Type</Text>
       <View style={styles.row}>
         <TouchableOpacity
-          style={[styles.button, isBusinessTrip && styles.businessActive]}
+          style={[
+            styles.button,
+            { borderColor: colors.border, backgroundColor: colors.white },
+            isBusinessTrip && { backgroundColor: colors.success, borderColor: colors.success },
+          ]}
           onPress={() => onChange(true)}
         >
-          <Text style={[styles.text, isBusinessTrip && styles.activeText]}>
+          <Text style={[styles.text, { color: colors.text }, isBusinessTrip && { color: colors.white }]}>
             {t('mileage.business')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, !isBusinessTrip && styles.personalActive]}
+          style={[
+            styles.button,
+            { borderColor: colors.border, backgroundColor: colors.white },
+            !isBusinessTrip && { backgroundColor: colors.muted, borderColor: colors.muted },
+          ]}
           onPress={() => onChange(false)}
         >
-          <Text style={[styles.text, !isBusinessTrip && styles.activeText]}>
+          <Text style={[styles.text, { color: colors.text }, !isBusinessTrip && { color: colors.white }]}>
             {t('mileage.personal')}
           </Text>
         </TouchableOpacity>
@@ -35,7 +45,6 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
     marginBottom: SPACING.sm,
   },
   row: {
@@ -47,24 +56,10 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     borderWidth: 1,
-    borderColor: COLORS.border,
     alignItems: 'center',
-    backgroundColor: COLORS.white,
-  },
-  businessActive: {
-    backgroundColor: COLORS.success,
-    borderColor: COLORS.success,
-  },
-  personalActive: {
-    backgroundColor: COLORS.muted,
-    borderColor: COLORS.muted,
   },
   text: {
     fontWeight: FONT_WEIGHTS.medium,
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
-  },
-  activeText: {
-    color: COLORS.white,
   },
 });

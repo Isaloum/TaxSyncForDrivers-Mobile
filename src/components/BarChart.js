@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
+import { useTheme } from '../contexts/ThemeContext';
 
 /**
  * Pure React Native bar chart — no external library needed.
@@ -9,18 +10,19 @@ import { COLORS, SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../con
  *   height: chart height (default 180)
  */
 export default function BarChart({ data = [], height = 180 }) {
+  const { colors } = useTheme();
   if (!data.length) return null;
 
   const maxValue = Math.max(...data.map((d) => d.value), 1);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <View style={[styles.chartArea, { height }]}>
         {data.map((item, i) => {
           const barHeight = (item.value / maxValue) * (height - 30);
           return (
             <View key={i} style={styles.barGroup}>
-              <Text style={styles.barValue}>
+              <Text style={[styles.barValue, { color: colors.muted }]}>
                 ${item.value >= 1000
                   ? `${(item.value / 1000).toFixed(1)}k`
                   : item.value.toFixed(0)}
@@ -30,11 +32,11 @@ export default function BarChart({ data = [], height = 180 }) {
                   styles.bar,
                   {
                     height: Math.max(barHeight, 4),
-                    backgroundColor: item.color || COLORS.primary,
+                    backgroundColor: item.color || colors.primary,
                   },
                 ]}
               />
-              <Text style={styles.barLabel} numberOfLines={1}>
+              <Text style={[styles.barLabel, { color: colors.muted }]} numberOfLines={1}>
                 {item.label}
               </Text>
             </View>
@@ -47,11 +49,9 @@ export default function BarChart({ data = [], height = 180 }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.card,
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: COLORS.border,
   },
   chartArea: {
     flexDirection: 'row',
@@ -73,13 +73,11 @@ const styles = StyleSheet.create({
   },
   barValue: {
     fontSize: FONT_SIZES.xs,
-    color: COLORS.muted,
     marginBottom: SPACING.xs,
     fontWeight: FONT_WEIGHTS.medium,
   },
   barLabel: {
     fontSize: 10,
-    color: COLORS.muted,
     marginTop: SPACING.xs,
     textAlign: 'center',
   },

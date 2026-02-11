@@ -15,11 +15,13 @@ import DatePickerField from '../components/DatePickerField';
 import { addTrip, getTrips, updateTrip } from '../services/storageService';
 import { getLastOdometerReading } from '../utils/mileageCalculations';
 import { validateTrip } from '../utils/validation';
-import { COLORS, SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
+import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function MileageAddScreen({ navigation, route }) {
   const { t } = useLanguage();
+  const { colors } = useTheme();
   const editMode = route.params?.editMode || false;
   const existing = route.params?.trip || null;
 
@@ -116,11 +118,11 @@ export default function MileageAddScreen({ navigation, route }) {
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
         {errors.length > 0 && (
-          <View style={styles.errorBox}>
+          <View style={[styles.errorBox, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
             {errors.map((e, i) => (
-              <Text key={i} style={styles.errorText}>{e}</Text>
+              <Text key={i} style={[styles.errorText, { color: colors.danger }]}>{e}</Text>
             ))}
           </View>
         )}
@@ -131,34 +133,34 @@ export default function MileageAddScreen({ navigation, route }) {
           onChange={setDate}
         />
 
-        <Text style={styles.label}>{t('mileage.destination')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('mileage.destination')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="e.g., Client office downtown"
           value={destination}
           onChangeText={setDestination}
         />
 
-        <Text style={styles.label}>{t('mileage.purpose')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('mileage.purpose')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="e.g., Client meeting, delivery"
           value={purpose}
           onChangeText={setPurpose}
         />
 
-        <Text style={styles.label}>{t('mileage.startOdometerKm')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('mileage.startOdometerKm')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="0"
           keyboardType="numeric"
           value={startOdometer}
           onChangeText={setStartOdometer}
         />
 
-        <Text style={styles.label}>{t('mileage.endOdometerKm')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('mileage.endOdometerKm')}</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="0"
           keyboardType="numeric"
           value={endOdometer}
@@ -166,9 +168,9 @@ export default function MileageAddScreen({ navigation, route }) {
         />
 
         {distance > 0 && (
-          <View style={styles.distanceDisplay}>
-            <Text style={styles.distanceLabel}>{t('mileage.distance')}</Text>
-            <Text style={styles.distanceValue}>{distance} km</Text>
+          <View style={[styles.distanceDisplay, { backgroundColor: colors.successLight }]}>
+            <Text style={[styles.distanceLabel, { color: colors.success }]}>{t('mileage.distance')}</Text>
+            <Text style={[styles.distanceValue, { color: colors.success }]}>{distance} km</Text>
           </View>
         )}
 
@@ -179,9 +181,9 @@ export default function MileageAddScreen({ navigation, route }) {
 
         {isBusinessTrip && (
           <>
-            <Text style={styles.label}>{t('mileage.clientNameOptional')}</Text>
+            <Text style={[styles.label, { color: colors.text }]}>{t('mileage.clientNameOptional')}</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
               placeholder="e.g., Uber, DoorDash"
               value={clientName}
               onChangeText={setClientName}
@@ -189,9 +191,9 @@ export default function MileageAddScreen({ navigation, route }) {
           </>
         )}
 
-        <Text style={styles.label}>{t('mileage.notesOptional')}</Text>
+        <Text style={[styles.label, { color: colors.text }]}>{t('mileage.notesOptional')}</Text>
         <TextInput
-          style={[styles.input, styles.multiline]}
+          style={[styles.input, styles.multiline, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="Additional details"
           value={notes}
           onChangeText={setNotes}
@@ -199,11 +201,11 @@ export default function MileageAddScreen({ navigation, route }) {
         />
 
         <TouchableOpacity
-          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+          style={[styles.saveButton, saving && styles.saveButtonDisabled, { backgroundColor: colors.primary }]}
           onPress={onSave}
           disabled={saving}
         >
-          <Text style={styles.saveButtonText}>
+          <Text style={[styles.saveButtonText, { color: colors.white }]}>
             {saving ? 'Saving...' : editMode ? t('mileage.updateTrip') : t('mileage.saveTrip')}
           </Text>
         </TouchableOpacity>
@@ -214,28 +216,23 @@ export default function MileageAddScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1, },
   content: { padding: SPACING.lg },
   label: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
     marginBottom: SPACING.xs,
     marginTop: SPACING.sm,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     marginBottom: SPACING.md,
     fontSize: FONT_SIZES.md,
-    backgroundColor: COLORS.white,
-    color: COLORS.text,
   },
   multiline: { height: 80, textAlignVertical: 'top' },
   distanceDisplay: {
-    backgroundColor: COLORS.successLight,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
     marginBottom: SPACING.md,
@@ -245,37 +242,30 @@ const styles = StyleSheet.create({
   },
   distanceLabel: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.success,
     fontWeight: FONT_WEIGHTS.medium,
   },
   distanceValue: {
     fontSize: FONT_SIZES.lg,
-    color: COLORS.success,
     fontWeight: FONT_WEIGHTS.bold,
   },
   saveButton: {
-    backgroundColor: COLORS.primary,
     padding: SPACING.lg,
     borderRadius: BORDER_RADIUS.sm,
     marginTop: SPACING.lg,
   },
   saveButtonDisabled: { opacity: 0.6 },
   saveButtonText: {
-    color: COLORS.white,
     textAlign: 'center',
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.md,
   },
   errorBox: {
-    backgroundColor: COLORS.dangerLight,
     borderWidth: 1,
-    borderColor: COLORS.danger,
     borderRadius: BORDER_RADIUS.sm,
     padding: SPACING.md,
     marginBottom: SPACING.md,
   },
   errorText: {
-    color: COLORS.danger,
     fontSize: FONT_SIZES.sm,
   },
 });
