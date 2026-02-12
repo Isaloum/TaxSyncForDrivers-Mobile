@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,17 +10,24 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getReceipts } from '../services/storageService';
+import { RECEIPT_CATEGORIES } from '../constants/categories';
+import { filterReceipts, sortReceipts } from '../utils/filterSort';
 import ReceiptCard from '../components/ReceiptCard';
+import SearchBar from '../components/SearchBar';
+import FilterSortBar from '../components/FilterSortBar';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 
 export default function ReceiptsListScreen({ navigation }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { colors } = useTheme();
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeSort, setActiveSort] = useState('date_desc');
 
   const loadReceipts = useCallback(async () => {
     try {
@@ -46,6 +53,30 @@ export default function ReceiptsListScreen({ navigation }) {
     loadReceipts();
   };
 
+  const categoryFilters = useMemo(() => {
+    const allLabel = t('filter.all');
+    const cats = RECEIPT_CATEGORIES.map((c) => ({
+      key: c.key,
+      label: language === 'fr' ? c.labelFr : c.label,
+    }));
+    return [{ key: 'all', label: allLabel }, ...cats];
+  }, [t, language]);
+
+  const sortOptions = useMemo(() => [
+    { key: 'date_desc', label: t('filter.sortNewest') },
+    { key: 'date_asc', label: t('filter.sortOldest') },
+    { key: 'amount_desc', label: t('filter.sortHighest') },
+    { key: 'amount_asc', label: t('filter.sortLowest') },
+  ], [t]);
+
+  const filteredReceipts = useMemo(() => {
+    const filtered = filterReceipts(receipts, { search, category: activeCategory });
+    return sortReceipts(filtered, activeSort);
+  }, [receipts, search, activeCategory, activeSort]);
+
+  const hasData = receipts.length > 0;
+  const isFiltered = search.trim() !== '' || activeCategory !== 'all';
+
   if (loading && receipts.length === 0) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
@@ -58,7 +89,7 @@ export default function ReceiptsListScreen({ navigation }) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.headerButtons}>
         <TouchableOpacity
-          style={[styles.addButton, { flex: 1 }, { backgroundColor: colors.primary }]}
+          style={[styles.addButton, { backgroundColor: colors.primary }]}
           onPress={() => navigation.navigate('ReceiptAdd')}
         >
           <Text style={[styles.addButtonText, { color: colors.white }]}>{t('receipts.addReceipt')}</Text>
@@ -71,8 +102,28 @@ export default function ReceiptsListScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
+      {hasData && (
+        <>
+          <SearchBar
+            value={search}
+            onChangeText={setSearch}
+            placeholder={t('filter.searchReceipts')}
+          />
+          <FilterSortBar
+            filters={categoryFilters}
+            activeFilter={activeCategory}
+            onFilterChange={setActiveCategory}
+            sortOptions={sortOptions}
+            activeSort={activeSort}
+            onSortChange={setActiveSort}
+            resultCount={filteredReceipts.length}
+            resultLabel={t('filter.receipts')}
+          />
+        </>
+      )}
+
       <FlatList
-        data={receipts}
+        data={filteredReceipts}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
@@ -83,9 +134,11 @@ export default function ReceiptsListScreen({ navigation }) {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('receipts.noReceipts')}</Text>
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>
+              {isFiltered ? t('filter.noResults') : t('receipts.noReceipts')}
+            </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              {t('receipts.noReceiptsHint')}
+              {isFiltered ? t('filter.noResultsHint') : t('receipts.noReceiptsHint')}
             </Text>
           </View>
         }
@@ -103,7 +156,7 @@ export default function ReceiptsListScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: SPACING.lg, },
+  container: { flex: 1, padding: SPACING.lg },
   center: {
     flex: 1,
     alignItems: 'center',
@@ -115,6 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   addButton: {
+    flex: 1,
     padding: SPACING.md,
     borderRadius: BORDER_RADIUS.sm,
   },

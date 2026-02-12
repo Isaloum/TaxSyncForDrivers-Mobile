@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
   RefreshControl,
@@ -10,10 +10,13 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { getTrips } from '../services/storageService';
 import { getTripSummary } from '../utils/mileageCalculations';
+import { filterTrips, sortTrips } from '../utils/filterSort';
 import SummaryCard from '../components/SummaryCard';
 import TripCard from '../components/TripCard';
 import EmptyState from '../components/EmptyState';
 import LoadingIndicator from '../components/LoadingIndicator';
+import SearchBar from '../components/SearchBar';
+import FilterSortBar from '../components/FilterSortBar';
 import { SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -25,6 +28,9 @@ export default function MileageListScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [summary, setSummary] = useState(null);
+  const [search, setSearch] = useState('');
+  const [activeTripType, setActiveTripType] = useState('all');
+  const [activeSort, setActiveSort] = useState('date_desc');
 
   const loadTrips = useCallback(async () => {
     try {
@@ -51,6 +57,27 @@ export default function MileageListScreen({ navigation }) {
     loadTrips();
   };
 
+  const tripTypeFilters = useMemo(() => [
+    { key: 'all', label: t('filter.all') },
+    { key: 'business', label: t('mileage.business') },
+    { key: 'personal', label: t('mileage.personal') },
+  ], [t]);
+
+  const sortOptions = useMemo(() => [
+    { key: 'date_desc', label: t('filter.sortNewest') },
+    { key: 'date_asc', label: t('filter.sortOldest') },
+    { key: 'distance_desc', label: t('filter.sortLongest') },
+    { key: 'distance_asc', label: t('filter.sortShortest') },
+  ], [t]);
+
+  const filteredTrips = useMemo(() => {
+    const filtered = filterTrips(trips, { search, tripType: activeTripType });
+    return sortTrips(filtered, activeSort);
+  }, [trips, search, activeTripType, activeSort]);
+
+  const hasData = trips.length > 0;
+  const isFiltered = search.trim() !== '' || activeTripType !== 'all';
+
   if (loading && trips.length === 0) {
     return <LoadingIndicator message={t('common.loading')} />;
   }
@@ -58,7 +85,7 @@ export default function MileageListScreen({ navigation }) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
-        data={trips}
+        data={filteredTrips}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
@@ -68,43 +95,71 @@ export default function MileageListScreen({ navigation }) {
           />
         }
         ListHeaderComponent={
-          summary && trips.length > 0 ? (
-            <View style={styles.summarySection}>
-              <View style={styles.summaryRow}>
-                <SummaryCard
-                  label={t('mileage.total')}
-                  value={String(summary.totalKm)}
-                  unit="km"
-                  color={colors.primary}
-                />
-                <SummaryCard
-                  label={t('mileage.businessPercent')}
-                  value={`${summary.businessPercent}%`}
-                  color={colors.success}
-                />
+          <>
+            {summary && hasData && (
+              <View style={styles.summarySection}>
+                <View style={styles.summaryRow}>
+                  <SummaryCard
+                    label={t('mileage.total')}
+                    value={String(summary.totalKm)}
+                    unit="km"
+                    color={colors.primary}
+                  />
+                  <SummaryCard
+                    label={t('mileage.businessPercent')}
+                    value={`${summary.businessPercent}%`}
+                    color={colors.success}
+                  />
+                </View>
+                <View style={styles.summaryRow}>
+                  <SummaryCard
+                    label={t('mileage.deductionEst')}
+                    value={`$${summary.estimatedDeduction.toFixed(2)}`}
+                    color={colors.warning}
+                  />
+                  <SummaryCard
+                    label={t('mileage.trips')}
+                    value={String(summary.totalTrips)}
+                    color={colors.primaryLight}
+                  />
+                </View>
               </View>
-              <View style={styles.summaryRow}>
-                <SummaryCard
-                  label={t('mileage.deductionEst')}
-                  value={`$${summary.estimatedDeduction.toFixed(2)}`}
-                  color={colors.warning}
+            )}
+            {hasData && (
+              <>
+                <SearchBar
+                  value={search}
+                  onChangeText={setSearch}
+                  placeholder={t('filter.searchTrips')}
                 />
-                <SummaryCard
-                  label={t('mileage.trips')}
-                  value={String(summary.totalTrips)}
-                  color={colors.primaryLight}
+                <FilterSortBar
+                  filters={tripTypeFilters}
+                  activeFilter={activeTripType}
+                  onFilterChange={setActiveTripType}
+                  sortOptions={sortOptions}
+                  activeSort={activeSort}
+                  onSortChange={setActiveSort}
+                  resultCount={filteredTrips.length}
+                  resultLabel={t('filter.trips')}
                 />
-              </View>
-            </View>
-          ) : null
+              </>
+            )}
+          </>
         }
         ListEmptyComponent={
-          <EmptyState
-            title={t('mileage.noTripsAlt')}
-            subtitle={t('mileage.noTripsHintAlt')}
-            actionLabel={t('mileage.logFirstTrip')}
-            onAction={() => navigation.navigate('MileageAdd')}
-          />
+          isFiltered ? (
+            <View style={styles.emptyFiltered}>
+              <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('filter.noResults')}</Text>
+              <Text style={[styles.emptySubtitle, { color: colors.muted }]}>{t('filter.noResultsHint')}</Text>
+            </View>
+          ) : (
+            <EmptyState
+              title={t('mileage.noTripsAlt')}
+              subtitle={t('mileage.noTripsHintAlt')}
+              actionLabel={t('mileage.logFirstTrip')}
+              onAction={() => navigation.navigate('MileageAdd')}
+            />
+          )
         }
         renderItem={({ item }) => (
           <TripCard
@@ -117,7 +172,7 @@ export default function MileageListScreen({ navigation }) {
         contentContainerStyle={styles.list}
       />
 
-      {trips.length > 0 && (
+      {hasData && (
         <TouchableOpacity
           style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
           onPress={() => navigation.navigate('MileageAdd')}
@@ -130,7 +185,7 @@ export default function MileageListScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, },
+  container: { flex: 1 },
   list: { padding: SPACING.lg },
   summarySection: {
     marginBottom: SPACING.lg,
@@ -139,6 +194,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: SPACING.md,
     marginBottom: SPACING.md,
+  },
+  emptyFiltered: {
+    alignItems: 'center',
+    marginTop: 48,
+  },
+  emptyTitle: {
+    fontSize: FONT_SIZES.lg,
+    fontWeight: FONT_WEIGHTS.semibold,
+    marginBottom: SPACING.sm,
+  },
+  emptySubtitle: {
+    fontSize: FONT_SIZES.sm,
+    textAlign: 'center',
   },
   fab: {
     position: 'absolute',
