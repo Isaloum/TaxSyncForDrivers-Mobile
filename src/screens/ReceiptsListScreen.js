@@ -13,6 +13,7 @@ import { getReceipts } from '../services/storageService';
 import { RECEIPT_CATEGORIES } from '../constants/categories';
 import { filterReceipts, sortReceipts } from '../utils/filterSort';
 import ReceiptCard from '../components/ReceiptCard';
+import FadeInView from '../components/FadeInView';
 import SearchBar from '../components/SearchBar';
 import FilterSortBar from '../components/FilterSortBar';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
@@ -142,13 +143,15 @@ export default function ReceiptsListScreen({ navigation }) {
             </Text>
           </View>
         }
-        renderItem={({ item }) => (
-          <ReceiptCard
-            receipt={item}
-            onPress={() =>
-              navigation.navigate('ReceiptDetail', { receiptId: item.id })
-            }
-          />
+        renderItem={({ item, index }) => (
+          <FadeInView delay={index * 50}>
+            <ReceiptCard
+              receipt={item}
+              onPress={() =>
+                navigation.navigate('ReceiptDetail', { receiptId: item.id })
+              }
+            />
+          </FadeInView>
         )}
       />
     </View>

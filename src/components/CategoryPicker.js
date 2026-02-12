@@ -4,6 +4,7 @@ import { RECEIPT_CATEGORIES } from '../constants/categories';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { lightTap } from '../utils/haptics';
 
 export default function CategoryPicker({ value, onChange }) {
   const { t, language } = useLanguage();
@@ -20,7 +21,10 @@ export default function CategoryPicker({ value, onChange }) {
               { backgroundColor: colors.border },
               value === cat.key && { backgroundColor: colors.primary },
             ]}
-            onPress={() => onChange(cat.key)}
+            onPress={() => { lightTap(); onChange(cat.key); }}
+            accessibilityRole="button"
+            accessibilityLabel={language === 'fr' ? cat.labelFr : cat.label}
+            accessibilityState={{ selected: value === cat.key }}
           >
             <Text
               style={[

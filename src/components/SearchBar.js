@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, Text, View } from 'react-native';
 import { SPACING, BORDER_RADIUS, FONT_SIZES } from '../constants/theme';
 import { useTheme } from '../contexts/ThemeContext';
+import { lightTap } from '../utils/haptics';
 
 export default function SearchBar({ value, onChangeText, placeholder }) {
   const { colors } = useTheme();
@@ -17,9 +18,15 @@ export default function SearchBar({ value, onChangeText, placeholder }) {
         autoCapitalize="none"
         autoCorrect={false}
         returnKeyType="search"
+        accessibilityLabel={placeholder}
       />
       {value.length > 0 && (
-        <TouchableOpacity onPress={() => onChangeText('')} style={styles.clearButton}>
+        <TouchableOpacity
+          onPress={() => { lightTap(); onChangeText(''); }}
+          style={styles.clearButton}
+          accessibilityRole="button"
+          accessibilityLabel="Clear search"
+        >
           <Text style={[styles.clearText, { color: colors.muted }]}>✕</Text>
         </TouchableOpacity>
       )}

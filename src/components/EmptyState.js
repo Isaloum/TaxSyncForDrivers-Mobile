@@ -10,7 +10,7 @@ export default function EmptyState({ title, subtitle, actionLabel, onAction }) {
       <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
       {subtitle ? <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text> : null}
       {actionLabel && onAction ? (
-        <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={onAction}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={onAction} accessibilityRole="button" accessibilityLabel={actionLabel}>
           <Text style={[styles.buttonText, { color: colors.white }]}>{actionLabel}</Text>
         </TouchableOpacity>
       ) : null}

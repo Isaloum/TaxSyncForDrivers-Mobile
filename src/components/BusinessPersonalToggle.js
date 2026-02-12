@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { mediumTap } from '../utils/haptics';
 
 export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
   const { t } = useLanguage();
@@ -17,7 +18,10 @@ export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
             { borderColor: colors.border, backgroundColor: colors.white },
             isBusinessTrip && { backgroundColor: colors.success, borderColor: colors.success },
           ]}
-          onPress={() => onChange(true)}
+          onPress={() => { mediumTap(); onChange(true); }}
+          accessibilityRole="button"
+          accessibilityLabel={t('mileage.business')}
+          accessibilityState={{ selected: isBusinessTrip }}
         >
           <Text style={[styles.text, { color: colors.text }, isBusinessTrip && { color: colors.white }]}>
             {t('mileage.business')}
@@ -29,7 +33,10 @@ export default function BusinessPersonalToggle({ isBusinessTrip, onChange }) {
             { borderColor: colors.border, backgroundColor: colors.white },
             !isBusinessTrip && { backgroundColor: colors.muted, borderColor: colors.muted },
           ]}
-          onPress={() => onChange(false)}
+          onPress={() => { mediumTap(); onChange(false); }}
+          accessibilityRole="button"
+          accessibilityLabel={t('mileage.personal')}
+          accessibilityState={{ selected: !isBusinessTrip }}
         >
           <Text style={[styles.text, { color: colors.text }, !isBusinessTrip && { color: colors.white }]}>
             {t('mileage.personal')}

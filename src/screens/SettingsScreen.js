@@ -6,6 +6,7 @@ import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON } from '../utils/
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { lightTap, mediumTap, successNotification } from '../utils/haptics';
 
 const PROVINCES = [
   { code: 'AB', label: 'Alberta' },
@@ -51,12 +52,14 @@ export default function SettingsScreen() {
   );
 
   const selectProvince = async (code) => {
+    lightTap();
     setShowProvinces(false);
     const updated = await saveSettings({ province: code });
     setSettings(updated);
   };
 
   const toggleLanguage = async () => {
+    mediumTap();
     const newLang = settings.language === 'en' ? 'fr' : 'en';
     setLanguage(newLang);
     setSettings({ ...settings, language: newLang });
@@ -67,12 +70,15 @@ export default function SettingsScreen() {
     try {
       if (type === 'receipts') {
         const result = await exportReceiptsCSV();
+        successNotification();
         Alert.alert(t('common.success'), `Exported ${result.count} receipts.`);
       } else if (type === 'mileage') {
         const result = await exportMileageCSV();
+        successNotification();
         Alert.alert(t('common.success'), `Exported ${result.count} trips.`);
       } else if (type === 'backup') {
         const result = await exportBackupJSON();
+        successNotification();
         Alert.alert(t('common.success'), `Backup created: ${result.receipts} receipts, ${result.trips} trips.`);
       }
     } catch (err) {
@@ -157,7 +163,10 @@ export default function SettingsScreen() {
                 { borderColor: colors.border },
                 theme === opt.value && { borderColor: colors.primary, backgroundColor: colors.primary + '15' },
               ]}
-              onPress={() => setTheme(opt.value)}
+              onPress={() => { lightTap(); setTheme(opt.value); }}
+              accessibilityRole="button"
+              accessibilityLabel={`${language === 'fr' ? opt.labelFr : opt.labelEn} theme`}
+              accessibilityState={{ selected: theme === opt.value }}
             >
               <Text style={styles.themeIcon}>{opt.icon}</Text>
               <Text

@@ -17,6 +17,7 @@
     "expo": "~50.0.0",
     "expo-camera": "~14.0.0",
     "expo-file-system": "~16.0.0",
+    "expo-haptics": "~12.8.1",
     "expo-sharing": "~11.10.0",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
@@ -37,7 +38,13 @@
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|@testing-library)"
     ],
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
   },
   "private": true
 }
