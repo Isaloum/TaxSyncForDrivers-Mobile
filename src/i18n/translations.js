@@ -105,6 +105,23 @@ const translations = {
       craTaxYear: 'CRA Tax Year',
     },
 
+    // Search & Filter
+    filter: {
+      searchReceipts: 'Search receipts...',
+      searchTrips: 'Search trips...',
+      all: 'All',
+      sortNewest: 'Newest',
+      sortOldest: 'Oldest',
+      sortHighest: 'Highest',
+      sortLowest: 'Lowest',
+      sortLongest: 'Longest',
+      sortShortest: 'Shortest',
+      receipts: 'receipts',
+      trips: 'trips',
+      noResults: 'No results found',
+      noResultsHint: 'Try a different search or filter.',
+    },
+
     // Common
     common: {
       error: 'Error',
@@ -219,6 +236,23 @@ const translations = {
       about: '\u00C0 propos',
       version: 'Version',
       craTaxYear: 'Ann\u00E9e fiscale ARC',
+    },
+
+    // Search & Filter
+    filter: {
+      searchReceipts: 'Rechercher des re\u00E7us...',
+      searchTrips: 'Rechercher des trajets...',
+      all: 'Tous',
+      sortNewest: 'R\u00E9cents',
+      sortOldest: 'Anciens',
+      sortHighest: 'Plus \u00E9lev\u00E9',
+      sortLowest: 'Plus bas',
+      sortLongest: 'Plus long',
+      sortShortest: 'Plus court',
+      receipts: 're\u00E7us',
+      trips: 'trajets',
+      noResults: 'Aucun r\u00E9sultat',
+      noResultsHint: 'Essayez une autre recherche ou un autre filtre.',
     },
 
     // Common
