@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useTheme } from '../contexts/ThemeContext';
+import { lightTap } from '../utils/haptics';
 
 /**
  * Horizontal filter chips + sort toggle.
@@ -48,7 +49,10 @@ export default function FilterSortBar({
                   { backgroundColor: colors.mutedLight, borderColor: colors.border },
                   isActive && { backgroundColor: colors.primary, borderColor: colors.primary },
                 ]}
-                onPress={() => onFilterChange(f.key)}
+                onPress={() => { lightTap(); onFilterChange(f.key); }}
+                accessibilityRole="button"
+                accessibilityLabel={f.label}
+                accessibilityState={{ selected: isActive }}
               >
                 <Text
                   style={[
@@ -83,7 +87,10 @@ export default function FilterSortBar({
                   { borderColor: colors.border },
                   isActive && { borderColor: colors.primary },
                 ]}
-                onPress={() => onSortChange(s.key)}
+                onPress={() => { lightTap(); onSortChange(s.key); }}
+                accessibilityRole="button"
+                accessibilityLabel={s.label}
+                accessibilityState={{ selected: isActive }}
               >
                 <Text
                   style={[

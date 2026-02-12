@@ -6,7 +6,12 @@ import { useTheme } from '../contexts/ThemeContext';
 export default function TripCard({ trip, onPress }) {
   const { colors } = useTheme();
   return (
-    <TouchableOpacity style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${trip.destination}, ${trip.distance} km, ${trip.isBusinessTrip ? 'Business' : 'Personal'}, ${trip.date}`}
+    >
       <View style={styles.header}>
         <Text style={[styles.date, { color: colors.muted }]}>{trip.date}</Text>
         <View style={[styles.distanceBadge, { backgroundColor: colors.primaryLight }]}>

@@ -15,6 +15,7 @@ import CategoryPicker from '../components/CategoryPicker';
 import DatePickerField from '../components/DatePickerField';
 import { addReceipt, updateReceipt } from '../services/storageService';
 import { validateReceipt } from '../utils/validation';
+import { successNotification, errorNotification } from '../utils/haptics';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -53,6 +54,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
 
     if (!validation.isValid) {
       setErrors(validation.errors);
+      errorNotification();
       return;
     }
 
@@ -73,6 +75,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
       } else {
         await addReceipt(receiptPayload);
       }
+      successNotification();
       navigation.goBack();
     } catch (err) {
       Alert.alert(t('common.error'), err.message || 'Failed to save receipt.');
@@ -86,7 +89,7 @@ export default function ReceiptAddScreen({ navigation, route }) {
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {errors.length > 0 && (
           <View style={[styles.errorBox, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
             {errors.map((e, i) => (
@@ -111,9 +114,11 @@ export default function ReceiptAddScreen({ navigation, route }) {
         <TextInput
           style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="0.00"
+          placeholderTextColor={colors.muted}
           keyboardType="decimal-pad"
           value={amount}
           onChangeText={setAmount}
+          accessibilityLabel={t('receipts.amount')}
         />
 
         <DatePickerField
@@ -126,8 +131,10 @@ export default function ReceiptAddScreen({ navigation, route }) {
         <TextInput
           style={[styles.input, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder="e.g., Shell, Costco"
+          placeholderTextColor={colors.muted}
           value={vendor}
           onChangeText={setVendor}
+          accessibilityLabel={t('receipts.vendor')}
         />
 
         <CategoryPicker value={category} onChange={setCategory} />
@@ -136,15 +143,19 @@ export default function ReceiptAddScreen({ navigation, route }) {
         <TextInput
           style={[styles.input, styles.multiline, { borderColor: colors.border, backgroundColor: colors.white, color: colors.text }]}
           placeholder={t('receipts.optionalNotes')}
+          placeholderTextColor={colors.muted}
           value={description}
           onChangeText={setDescription}
           multiline
+          accessibilityLabel={t('receipts.description')}
         />
 
         <TouchableOpacity
           style={[styles.saveButton, saving && styles.saveButtonDisabled, { backgroundColor: colors.primary }]}
           onPress={onSave}
           disabled={saving}
+          accessibilityRole="button"
+          accessibilityLabel={editMode ? t('receipts.updateReceipt') : t('receipts.saveReceipt')}
         >
           <Text style={[styles.saveButtonText, { color: colors.white }]}>
             {saving ? t('receipts.saving') : editMode ? t('receipts.updateReceipt') : t('receipts.saveReceipt')}

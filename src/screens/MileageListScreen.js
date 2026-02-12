@@ -15,6 +15,7 @@ import SummaryCard from '../components/SummaryCard';
 import TripCard from '../components/TripCard';
 import EmptyState from '../components/EmptyState';
 import LoadingIndicator from '../components/LoadingIndicator';
+import FadeInView from '../components/FadeInView';
 import SearchBar from '../components/SearchBar';
 import FilterSortBar from '../components/FilterSortBar';
 import { SPACING, FONT_SIZES, FONT_WEIGHTS, BORDER_RADIUS } from '../constants/theme';
@@ -161,13 +162,15 @@ export default function MileageListScreen({ navigation }) {
             />
           )
         }
-        renderItem={({ item }) => (
-          <TripCard
-            trip={item}
-            onPress={() =>
-              navigation.navigate('MileageDetail', { tripId: item.id })
-            }
-          />
+        renderItem={({ item, index }) => (
+          <FadeInView delay={index * 50}>
+            <TripCard
+              trip={item}
+              onPress={() =>
+                navigation.navigate('MileageDetail', { tripId: item.id })
+              }
+            />
+          </FadeInView>
         )}
         contentContainerStyle={styles.list}
       />

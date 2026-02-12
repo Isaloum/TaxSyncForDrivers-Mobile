@@ -15,6 +15,7 @@ import DatePickerField from '../components/DatePickerField';
 import { addTrip, getTrips, updateTrip } from '../services/storageService';
 import { getLastOdometerReading } from '../utils/mileageCalculations';
 import { validateTrip } from '../utils/validation';
+import { successNotification, errorNotification } from '../utils/haptics';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -75,6 +76,7 @@ export default function MileageAddScreen({ navigation, route }) {
 
     if (!validation.isValid) {
       setErrors(validation.errors);
+      errorNotification();
       return;
     }
 
@@ -105,6 +107,7 @@ export default function MileageAddScreen({ navigation, route }) {
           notes,
         });
       }
+      successNotification();
       navigation.goBack();
     } catch (err) {
       Alert.alert(t('common.error'), err.message || 'Failed to save trip.');
@@ -118,7 +121,7 @@ export default function MileageAddScreen({ navigation, route }) {
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {errors.length > 0 && (
           <View style={[styles.errorBox, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
             {errors.map((e, i) => (
@@ -204,6 +207,8 @@ export default function MileageAddScreen({ navigation, route }) {
           style={[styles.saveButton, saving && styles.saveButtonDisabled, { backgroundColor: colors.primary }]}
           onPress={onSave}
           disabled={saving}
+          accessibilityRole="button"
+          accessibilityLabel={editMode ? t('mileage.updateTrip') : t('mileage.saveTrip')}
         >
           <Text style={[styles.saveButtonText, { color: colors.white }]}>
             {saving ? 'Saving...' : editMode ? t('mileage.updateTrip') : t('mileage.saveTrip')}

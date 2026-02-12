@@ -14,7 +14,12 @@ export default function ReceiptCard({ receipt, onPress }) {
   const { expense } = receipt;
 
   return (
-    <TouchableOpacity style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${expense.vendor || 'Receipt'}, $${expense.amount?.toFixed(2)}, ${getCategoryLabel(expense.category)}, ${expense.date}`}
+    >
       <View style={styles.header}>
         <Text style={[styles.amount, { color: colors.text }]}>${expense.amount?.toFixed(2)}</Text>
         <View style={[styles.badge, { backgroundColor: colors.primary }]}>
