@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.expo/
+__tests__/
+src/
+docs/
