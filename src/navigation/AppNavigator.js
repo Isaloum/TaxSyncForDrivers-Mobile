@@ -14,6 +14,7 @@ import CameraCaptureScreen from '../screens/CameraCaptureScreen';
 import MileageListScreen from '../screens/MileageListScreen';
 import MileageAddScreen from '../screens/MileageAddScreen';
 import MileageDetailScreen from '../screens/MileageDetailScreen';
+import GPSTrackingScreen from '../screens/GPSTrackingScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import NotificationsSettingsScreen from '../screens/NotificationsSettingsScreen';
@@ -85,6 +86,11 @@ function MileageStackNavigator() {
         name="MileageDetail"
         component={MileageDetailScreen}
         options={{ title: t('mileage.tripDetails') }}
+      />
+      <MileageStack.Screen
+        name="GPSTracking"
+        component={GPSTrackingScreen}
+        options={{ title: t('gps.title') }}
       />
     </MileageStack.Navigator>
   );

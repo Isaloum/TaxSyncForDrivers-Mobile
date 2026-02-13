@@ -130,6 +130,33 @@ const translations = {
       footer: 'Notifications are delivered locally on your device. No data is sent externally.',
     },
 
+    // GPS Tracking
+    gps: {
+      title: 'GPS Trip Tracker',
+      trackTrip: 'Track Trip',
+      startTrip: 'Start Tracking',
+      stopTrip: 'Stop Tracking',
+      saveTrip: 'Save Trip',
+      distance: 'Distance',
+      duration: 'Duration',
+      points: 'GPS Points',
+      status: 'Status',
+      recording: 'Recording',
+      stopped: 'Stopped',
+      ready: 'Ready',
+      gpsTrip: 'GPS-tracked trip',
+      tripDetails: 'Trip Details',
+      destinationPlaceholder: 'Where did you go?',
+      purposePlaceholder: 'Delivery, client meeting, etc.',
+      notesPlaceholder: 'Additional details',
+      tooShort: 'Trip is too short to save (less than 0.1 km).',
+      discardTitle: 'Discard Trip',
+      discardMessage: 'Are you sure you want to discard this tracked trip?',
+      discard: 'Discard',
+      permissionDenied: 'Location permission is required to track trips. Please enable it in your device settings.',
+      footer: 'GPS tracking uses your device location to measure distance. Tracking works in the background while the app is open.',
+    },
+
     // Search & Filter
     filter: {
       searchReceipts: 'Search receipts...',
@@ -286,6 +313,33 @@ const translations = {
       refreshed: 'Les rappels de notification ont \u00E9t\u00E9 mis \u00E0 jour.',
       cleared: 'Toutes les notifications programm\u00E9es ont \u00E9t\u00E9 effac\u00E9es.',
       footer: 'Les notifications sont envoy\u00E9es localement sur votre appareil. Aucune donn\u00E9e n\u2019est envoy\u00E9e \u00E0 l\u2019ext\u00E9rieur.',
+    },
+
+    // GPS Tracking
+    gps: {
+      title: 'Suivi GPS des trajets',
+      trackTrip: 'Suivre un trajet',
+      startTrip: 'D\u00E9marrer le suivi',
+      stopTrip: 'Arr\u00EAter le suivi',
+      saveTrip: 'Enregistrer le trajet',
+      distance: 'Distance',
+      duration: 'Dur\u00E9e',
+      points: 'Points GPS',
+      status: 'Statut',
+      recording: 'Enregistrement',
+      stopped: 'Arr\u00EAt\u00E9',
+      ready: 'Pr\u00EAt',
+      gpsTrip: 'Trajet suivi par GPS',
+      tripDetails: 'D\u00E9tails du trajet',
+      destinationPlaceholder: 'O\u00F9 \u00EAtes-vous all\u00E9\u00A0?',
+      purposePlaceholder: 'Livraison, r\u00E9union client, etc.',
+      notesPlaceholder: 'D\u00E9tails suppl\u00E9mentaires',
+      tooShort: 'Le trajet est trop court pour \u00EAtre enregistr\u00E9 (moins de 0,1 km).',
+      discardTitle: 'Annuler le trajet',
+      discardMessage: '\u00CAtes-vous s\u00FBr de vouloir annuler ce trajet suivi\u00A0?',
+      discard: 'Annuler',
+      permissionDenied: 'La permission de localisation est n\u00E9cessaire pour suivre les trajets. Veuillez l\u2019activer dans les param\u00E8tres de votre appareil.',
+      footer: 'Le suivi GPS utilise la localisation de votre appareil pour mesurer la distance. Le suivi fonctionne en arri\u00E8re-plan tant que l\u2019application est ouverte.',
     },
 
     // Search & Filter
