@@ -16,6 +16,7 @@ import MileageAddScreen from '../screens/MileageAddScreen';
 import MileageDetailScreen from '../screens/MileageDetailScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import NotificationsSettingsScreen from '../screens/NotificationsSettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const ReceiptsStack = createStackNavigator();
@@ -112,6 +113,11 @@ function SettingsStackNavigator() {
         name="SettingsHome"
         component={SettingsScreen}
         options={{ title: t('settings.title') }}
+      />
+      <SettingsStack.Screen
+        name="NotificationsSettings"
+        component={NotificationsSettingsScreen}
+        options={{ title: t('notifications.title') }}
       />
     </SettingsStack.Navigator>
   );

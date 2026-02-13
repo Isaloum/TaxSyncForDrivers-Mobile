@@ -1,4 +1,4 @@
-import { t, translations } from '../src/i18n/index';
+import { t, tWithParams, translations } from '../src/i18n/index';
 
 describe('t() translation function', () => {
   it('returns English string by default', () => {
@@ -39,6 +39,28 @@ describe('t() translation function', () => {
   it('handles settings namespace', () => {
     expect(t('settings.province', 'en')).toBe('Province');
     expect(t('settings.province', 'fr')).toBe('Province');
+  });
+});
+
+describe('tWithParams() interpolation', () => {
+  it('replaces {{count}} placeholder with value', () => {
+    expect(tWithParams('notifications.scheduledCount', 'en', { count: 5 })).toBe('5 notifications scheduled');
+  });
+
+  it('replaces placeholder in French', () => {
+    expect(tWithParams('notifications.scheduledCount', 'fr', { count: 3 })).toBe('3 notifications programmées');
+  });
+
+  it('handles zero value', () => {
+    expect(tWithParams('notifications.scheduledCount', 'en', { count: 0 })).toBe('0 notifications scheduled');
+  });
+
+  it('returns string as-is when no matching placeholder', () => {
+    expect(tWithParams('common.success', 'en', { count: 5 })).toBe('Success');
+  });
+
+  it('returns key when key is not found', () => {
+    expect(tWithParams('nonexistent', 'en', { count: 1 })).toBe('nonexistent');
   });
 });
 

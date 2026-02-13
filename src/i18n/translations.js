@@ -103,6 +103,27 @@ const translations = {
       about: 'About',
       version: 'Version',
       craTaxYear: 'CRA Tax Year',
+      notifications: 'Notifications',
+    },
+
+    // Notifications
+    notifications: {
+      title: 'Notifications',
+      taxDeadline: 'Tax Filing Deadlines',
+      taxDeadlineDesc: 'Reminders before CRA filing deadlines (April 30, June 15)',
+      gstFiling: 'GST/HST Quarterly',
+      gstFilingDesc: 'Quarterly GST/HST installment reminders',
+      weeklyReceipt: 'Weekly Receipt Reminder',
+      weeklyReceiptDesc: 'Sunday reminder to log receipts from the week',
+      mileageReminder: 'Mileage Reminder',
+      mileageReminderDesc: 'Friday reminder to log trips for the week',
+      permissionDenied: 'Notification permission is not granted. Enable notifications in your device settings.',
+      scheduledCount: '{{count}} notifications scheduled',
+      refresh: 'Refresh Reminders',
+      clearAll: 'Clear All',
+      refreshed: 'Notification reminders updated.',
+      cleared: 'All scheduled notifications cleared.',
+      footer: 'Notifications are delivered locally on your device. No data is sent externally.',
     },
 
     // Search & Filter
@@ -236,6 +257,27 @@ const translations = {
       about: '\u00C0 propos',
       version: 'Version',
       craTaxYear: 'Ann\u00E9e fiscale ARC',
+      notifications: 'Notifications',
+    },
+
+    // Notifications
+    notifications: {
+      title: 'Notifications',
+      taxDeadline: 'Dates limites fiscales',
+      taxDeadlineDesc: 'Rappels avant les dates limites de l\u2019ARC (30 avril, 15 juin)',
+      gstFiling: 'TPS/TVH trimestriel',
+      gstFilingDesc: 'Rappels trimestriels pour les acomptes TPS/TVH',
+      weeklyReceipt: 'Rappel hebdomadaire des re\u00E7us',
+      weeklyReceiptDesc: 'Rappel le dimanche pour enregistrer les re\u00E7us de la semaine',
+      mileageReminder: 'Rappel de kilom\u00E9trage',
+      mileageReminderDesc: 'Rappel le vendredi pour consigner les trajets de la semaine',
+      permissionDenied: 'La permission de notification n\u2019est pas accord\u00E9e. Activez les notifications dans les param\u00E8tres de votre appareil.',
+      scheduledCount: '{{count}} notifications programm\u00E9es',
+      refresh: 'Actualiser les rappels',
+      clearAll: 'Tout effacer',
+      refreshed: 'Les rappels de notification ont \u00E9t\u00E9 mis \u00E0 jour.',
+      cleared: 'Toutes les notifications programm\u00E9es ont \u00E9t\u00E9 effac\u00E9es.',
+      footer: 'Les notifications sont envoy\u00E9es localement sur votre appareil. Aucune donn\u00E9e n\u2019est envoy\u00E9e \u00E0 l\u2019ext\u00E9rieur.',
     },
 
     // Search & Filter

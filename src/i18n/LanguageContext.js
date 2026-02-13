@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { getSettings, saveSettings } from '../services/storageService';
-import { t as translate } from './index';
+import { t as translate, tWithParams as translateWithParams } from './index';
 
 const LanguageContext = createContext({
   language: 'en',
@@ -25,7 +25,10 @@ export function LanguageProvider({ children }) {
     await saveSettings({ language: lang });
   }, []);
 
-  const t = useCallback((key) => translate(key, language), [language]);
+  const t = useCallback((key, params) => {
+    if (params) return translateWithParams(key, language, params);
+    return translate(key, language);
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
