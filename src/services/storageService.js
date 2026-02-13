@@ -223,3 +223,17 @@ export async function saveSettings(settings) {
   if (!success) throw new Error('Failed to save settings');
   return updated;
 }
+
+// --- Bulk restore (for backup import) ---
+
+export async function replaceAllReceipts(receipts) {
+  const success = await safeSetItem(RECEIPTS_KEY, receipts);
+  if (!success) throw new Error('Failed to restore receipts');
+  return receipts.length;
+}
+
+export async function replaceAllTrips(trips) {
+  const success = await safeSetItem(MILEAGE_KEY, trips);
+  if (!success) throw new Error('Failed to restore trips');
+  return trips.length;
+}
