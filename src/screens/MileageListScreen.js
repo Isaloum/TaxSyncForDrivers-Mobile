@@ -176,12 +176,22 @@ export default function MileageListScreen({ navigation }) {
       />
 
       {hasData && (
-        <TouchableOpacity
-          style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
-          onPress={() => navigation.navigate('MileageAdd')}
-        >
-          <Text style={[styles.fabText, { color: colors.white }]}>+</Text>
-        </TouchableOpacity>
+        <View style={styles.fabContainer}>
+          <TouchableOpacity
+            style={[styles.fabSecondary, { backgroundColor: colors.success, shadowColor: colors.shadow }]}
+            onPress={() => navigation.navigate('GPSTracking')}
+            accessibilityRole="button"
+            accessibilityLabel={t('gps.trackTrip')}
+          >
+            <Text style={[styles.fabIcon, { color: colors.white }]}>📍</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.fab, { backgroundColor: colors.primary, shadowColor: colors.shadow }]}
+            onPress={() => navigation.navigate('MileageAdd')}
+          >
+            <Text style={[styles.fabText, { color: colors.white }]}>+</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -211,10 +221,26 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.sm,
     textAlign: 'center',
   },
-  fab: {
+  fabContainer: {
     position: 'absolute',
     bottom: SPACING.xl,
     right: SPACING.xl,
+    alignItems: 'center',
+    gap: SPACING.sm,
+  },
+  fabSecondary: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  fabIcon: { fontSize: 20 },
+  fab: {
     width: 56,
     height: 56,
     borderRadius: 28,
