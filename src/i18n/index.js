@@ -50,4 +50,20 @@ export function t(key, language = 'en') {
   return key;
 }
 
+/**
+ * Translate with interpolation support for {{key}} placeholders.
+ *
+ * @param {string} key - Dot-separated path
+ * @param {string} language - Language code
+ * @param {Object} params - Key-value pairs for interpolation
+ * @returns {string}
+ */
+export function tWithParams(key, language = 'en', params = {}) {
+  let result = t(key, language);
+  for (const [k, v] of Object.entries(params)) {
+    result = result.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), String(v));
+  }
+  return result;
+}
+
 export { default as translations } from './translations';

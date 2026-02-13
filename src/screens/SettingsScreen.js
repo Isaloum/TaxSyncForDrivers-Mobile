@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getSettings, saveSettings } from '../services/storageService';
 import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON } from '../utils/exportService';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
@@ -36,6 +36,7 @@ function getProvinceLabel(code) {
 }
 
 export default function SettingsScreen() {
+  const navigation = useNavigation();
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme, colors } = useTheme();
   const [settings, setSettings] = useState({ province: 'QC', language: 'en' });
@@ -181,6 +182,20 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           ))}
         </View>
+      </View>
+
+      {/* Notifications */}
+      <Text style={[styles.sectionTitle, dynamicStyles.text]}>{t('settings.notifications')}</Text>
+      <View style={[styles.card, dynamicStyles.card]}>
+        <TouchableOpacity
+          style={styles.exportRow}
+          onPress={() => { lightTap(); navigation.navigate('NotificationsSettings'); }}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.notifications')}
+        >
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('notifications.title')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>→</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Data export */}
