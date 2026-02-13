@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getSettings, saveSettings } from '../services/storageService';
-import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON } from '../utils/exportService';
+import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON, importBackupJSON } from '../utils/exportService';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -64,6 +64,32 @@ export default function SettingsScreen() {
     const newLang = settings.language === 'en' ? 'fr' : 'en';
     setLanguage(newLang);
     setSettings({ ...settings, language: newLang });
+  };
+
+  const handleImport = async () => {
+    try {
+      const result = await importBackupJSON();
+      if (!result) return; // User cancelled
+      successNotification();
+      Alert.alert(
+        t('common.success'),
+        t('settings.restoreSuccess', { receipts: result.receipts, trips: result.trips })
+      );
+    } catch (err) {
+      Alert.alert(t('common.error'), err.message || t('settings.restoreFailed'));
+    }
+  };
+
+  const confirmRestore = () => {
+    lightTap();
+    Alert.alert(
+      t('settings.restoreBackup'),
+      t('settings.restoreWarning'),
+      [
+        { text: t('receipts.cancel'), style: 'cancel' },
+        { text: t('settings.restoreBackup'), style: 'destructive', onPress: handleImport },
+      ]
+    );
   };
 
   const handleExport = async (type) => {
@@ -226,6 +252,16 @@ export default function SettingsScreen() {
         >
           <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.fullBackupJson')}</Text>
           <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
+        </TouchableOpacity>
+        <View style={[styles.divider, dynamicStyles.divider]} />
+        <TouchableOpacity
+          style={styles.exportRow}
+          onPress={confirmRestore}
+          accessibilityRole="button"
+          accessibilityLabel={t('settings.restoreBackup')}
+        >
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.restoreBackup')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↙</Text>
         </TouchableOpacity>
       </View>
 

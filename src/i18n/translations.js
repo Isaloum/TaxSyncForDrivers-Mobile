@@ -104,6 +104,10 @@ const translations = {
       version: 'Version',
       craTaxYear: 'CRA Tax Year',
       notifications: 'Notifications',
+      restoreBackup: 'Restore Backup',
+      restoreWarning: 'This will replace all current data with the backup file. This cannot be undone.',
+      restoreSuccess: 'Restored {{receipts}} receipts and {{trips}} trips.',
+      restoreFailed: 'Failed to restore backup.',
     },
 
     // Notifications
@@ -258,6 +262,10 @@ const translations = {
       version: 'Version',
       craTaxYear: 'Ann\u00E9e fiscale ARC',
       notifications: 'Notifications',
+      restoreBackup: 'Restaurer la sauvegarde',
+      restoreWarning: 'Cela remplacera toutes les donn\u00E9es actuelles par le fichier de sauvegarde. Cette action est irr\u00E9versible.',
+      restoreSuccess: '{{receipts}} re\u00E7us et {{trips}} trajets restaur\u00E9s.',
+      restoreFailed: '\u00C9chec de la restauration de la sauvegarde.',
     },
 
     // Notifications
