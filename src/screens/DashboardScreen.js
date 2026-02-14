@@ -209,6 +209,13 @@ export default function DashboardScreen({ navigation }) {
             <Text style={[styles.actionText, { color: colors.primary }]}>{t('dashboard.scan')}</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={[styles.taxReportButton, { backgroundColor: colors.card, borderColor: colors.primary }]}
+          onPress={() => navigation.navigate('TaxSummary')}
+          accessibilityLabel={t('taxSummary.title')}
+        >
+          <Text style={[styles.taxReportText, { color: colors.primary }]}>📊 {t('taxSummary.viewReport')}</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{ height: SPACING.xxl }} />
@@ -278,5 +285,16 @@ const styles = StyleSheet.create({
   actionText: {
     fontWeight: FONT_WEIGHTS.semibold,
     fontSize: FONT_SIZES.sm,
+  },
+  taxReportButton: {
+    borderWidth: 1.5,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.lg,
+    marginTop: SPACING.md,
+    alignItems: 'center',
+  },
+  taxReportText: {
+    fontWeight: FONT_WEIGHTS.bold,
+    fontSize: FONT_SIZES.md,
   },
 });

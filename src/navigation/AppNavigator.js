@@ -18,6 +18,7 @@ import GPSTrackingScreen from '../screens/GPSTrackingScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import NotificationsSettingsScreen from '../screens/NotificationsSettingsScreen';
+import TaxSummaryScreen from '../screens/TaxSummaryScreen';
 
 const Tab = createBottomTabNavigator();
 const ReceiptsStack = createStackNavigator();
@@ -105,6 +106,11 @@ function DashboardStackNavigator() {
         name="DashboardHome"
         component={DashboardScreen}
         options={{ title: t('dashboard.title') }}
+      />
+      <DashboardStack.Screen
+        name="TaxSummary"
+        component={TaxSummaryScreen}
+        options={{ title: t('taxSummary.title') }}
       />
     </DashboardStack.Navigator>
   );
