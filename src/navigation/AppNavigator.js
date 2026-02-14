@@ -19,6 +19,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import NotificationsSettingsScreen from '../screens/NotificationsSettingsScreen';
 import TaxSummaryScreen from '../screens/TaxSummaryScreen';
+import CSVImportScreen from '../screens/CSVImportScreen';
 
 const Tab = createBottomTabNavigator();
 const ReceiptsStack = createStackNavigator();
@@ -130,6 +131,11 @@ function SettingsStackNavigator() {
         name="NotificationsSettings"
         component={NotificationsSettingsScreen}
         options={{ title: t('notifications.title') }}
+      />
+      <SettingsStack.Screen
+        name="CSVImport"
+        component={CSVImportScreen}
+        options={{ title: t('csvImport.title') }}
       />
     </SettingsStack.Navigator>
   );

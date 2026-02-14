@@ -295,6 +295,16 @@ export default function SettingsScreen() {
         <View style={[styles.divider, dynamicStyles.divider]} />
         <TouchableOpacity
           style={styles.exportRow}
+          onPress={() => { lightTap(); navigation.navigate('CSVImport'); }}
+          accessibilityRole="button"
+          accessibilityLabel={t('csvImport.title')}
+        >
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('csvImport.importButton')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↙</Text>
+        </TouchableOpacity>
+        <View style={[styles.divider, dynamicStyles.divider]} />
+        <TouchableOpacity
+          style={styles.exportRow}
           onPress={confirmRestore}
           accessibilityRole="button"
           accessibilityLabel={t('settings.restoreBackup')}
