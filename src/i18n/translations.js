@@ -174,6 +174,27 @@ const translations = {
       noResultsHint: 'Try a different search or filter.',
     },
 
+    // Tax Summary Report
+    taxSummary: {
+      title: 'Tax Summary',
+      subtitle: 'CRA T2125 — Statement of Business Activities',
+      viewReport: 'View Tax Report',
+      expensesByCategory: 'Expenses by Category (T2125)',
+      totalExpenses: 'Total Expenses',
+      mileageSummary: 'Mileage Summary',
+      businessKm: 'Business km',
+      personalKm: 'Personal km',
+      totalKm: 'Total km',
+      businessPercent: 'Business %',
+      mileageDeduction: 'Mileage Deduction',
+      craSimplified: 'CRA simplified method: $0.70/km (first 5,000) + $0.64/km after',
+      taxesPaid: 'Taxes Paid',
+      totalTaxPaid: 'Total Tax Paid',
+      totalDeductions: 'Total Deductions',
+      shareReport: 'Share Tax Report',
+      footer: 'This report is for informational purposes only. Consult a tax professional for filing.',
+    },
+
     // OCR / Camera Scan
     ocr: {
       requestingPermission: 'Requesting camera permission...',
@@ -376,6 +397,27 @@ const translations = {
       trips: 'trajets',
       noResults: 'Aucun r\u00E9sultat',
       noResultsHint: 'Essayez une autre recherche ou un autre filtre.',
+    },
+
+    // Tax Summary Report
+    taxSummary: {
+      title: 'R\u00E9sum\u00E9 fiscal',
+      subtitle: 'ARC T2125 \u2014 \u00C9tat des r\u00E9sultats des activit\u00E9s d\u2019une entreprise',
+      viewReport: 'Voir le rapport fiscal',
+      expensesByCategory: 'D\u00E9penses par cat\u00E9gorie (T2125)',
+      totalExpenses: 'Total des d\u00E9penses',
+      mileageSummary: 'R\u00E9sum\u00E9 du kilom\u00E9trage',
+      businessKm: 'Km affaires',
+      personalKm: 'Km personnel',
+      totalKm: 'Km total',
+      businessPercent: '% affaires',
+      mileageDeduction: 'D\u00E9duction kilom\u00E9trique',
+      craSimplified: 'M\u00E9thode simplifi\u00E9e ARC\u00A0: 0,70\u00A0$/km (premiers 5\u00A0000) + 0,64\u00A0$/km ensuite',
+      taxesPaid: 'Taxes pay\u00E9es',
+      totalTaxPaid: 'Total des taxes pay\u00E9es',
+      totalDeductions: 'Total des d\u00E9ductions',
+      shareReport: 'Partager le rapport fiscal',
+      footer: 'Ce rapport est fourni \u00E0 titre informatif seulement. Consultez un professionnel de l\u2019imp\u00F4t pour la d\u00E9claration.',
     },
 
     // OCR / Camera Scan
