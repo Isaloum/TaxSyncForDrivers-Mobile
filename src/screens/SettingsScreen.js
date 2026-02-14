@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { getSettings, saveSettings } from '../services/storageService';
+import { getSettings, saveSettings, getReceipts, getTrips } from '../services/storageService';
 import { exportReceiptsCSV, exportMileageCSV, exportBackupJSON, importBackupJSON } from '../utils/exportService';
+import { exportReceiptsPDF, exportMileagePDF } from '../services/pdfExportService';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { lightTap, mediumTap, successNotification } from '../utils/haptics';
+import { lightTap, mediumTap, successNotification, errorNotification } from '../utils/haptics';
 
 const PROVINCES = [
   { code: 'AB', label: 'Alberta' },
@@ -110,6 +111,26 @@ export default function SettingsScreen() {
       }
     } catch (err) {
       Alert.alert(t('common.error'), err.message || 'Failed to export.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportPDF = async (type) => {
+    setExporting(true);
+    try {
+      const currentYear = new Date().getFullYear();
+      if (type === 'receipts') {
+        const receipts = await getReceipts();
+        await exportReceiptsPDF(receipts, language, currentYear);
+      } else if (type === 'mileage') {
+        const trips = await getTrips();
+        await exportMileagePDF(trips, language, currentYear);
+      }
+      successNotification();
+    } catch (err) {
+      errorNotification();
+      Alert.alert(t('common.error'), err.message || t('pdfExport.exportFailed'));
     } finally {
       setExporting(false);
     }
@@ -251,6 +272,24 @@ export default function SettingsScreen() {
           disabled={exporting}
         >
           <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('settings.fullBackupJson')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
+        </TouchableOpacity>
+        <View style={[styles.divider, dynamicStyles.divider]} />
+        <TouchableOpacity
+          style={styles.exportRow}
+          onPress={() => handleExportPDF('receipts')}
+          disabled={exporting}
+        >
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('pdfExport.exportReceipts')}</Text>
+          <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
+        </TouchableOpacity>
+        <View style={[styles.divider, dynamicStyles.divider]} />
+        <TouchableOpacity
+          style={styles.exportRow}
+          onPress={() => handleExportPDF('mileage')}
+          disabled={exporting}
+        >
+          <Text style={[styles.exportLabel, dynamicStyles.text]}>{t('pdfExport.exportMileage')}</Text>
           <Text style={[styles.exportIcon, dynamicStyles.primary]}>↗</Text>
         </TouchableOpacity>
         <View style={[styles.divider, dynamicStyles.divider]} />

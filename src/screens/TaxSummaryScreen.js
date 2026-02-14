@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   ScrollView,
   Share,
@@ -11,17 +12,21 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { getReceipts, getTrips, getSettings } from '../services/storageService';
 import { generateTaxSummary, formatTaxReport } from '../utils/taxSummary';
+import { exportTaxSummaryPDF, exportReceiptsPDF, exportMileagePDF } from '../services/pdfExportService';
 import { SPACING, BORDER_RADIUS, FONT_SIZES, FONT_WEIGHTS } from '../constants/theme';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { successNotification } from '../utils/haptics';
+import { successNotification, errorNotification } from '../utils/haptics';
 
 export default function TaxSummaryScreen() {
   const { t, language } = useLanguage();
   const { colors } = useTheme();
   const [summary, setSummary] = useState(null);
+  const [receipts, setReceipts] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(null); // 'tax' | 'receipts' | 'mileage' | null
 
   const loadSummary = useCallback(async () => {
     setLoading(true);
@@ -31,6 +36,8 @@ export default function TaxSummaryScreen() {
         getTrips(),
         getSettings(),
       ]);
+      setReceipts(receipts);
+      setTrips(trips);
       const province = settings?.province || 'QC';
       const report = generateTaxSummary(receipts, trips, province, selectedYear);
       setSummary(report);
@@ -58,6 +65,46 @@ export default function TaxSummaryScreen() {
       successNotification();
     } catch (err) {
       // User cancelled share
+    }
+  };
+
+  const handleExportTaxPDF = async () => {
+    if (!summary) return;
+    setExporting('tax');
+    try {
+      await exportTaxSummaryPDF(summary, language);
+      successNotification();
+    } catch (err) {
+      errorNotification();
+      Alert.alert(t('common.error'), err.message || t('pdfExport.exportFailed'));
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleExportReceiptsPDF = async () => {
+    setExporting('receipts');
+    try {
+      await exportReceiptsPDF(receipts, language, selectedYear);
+      successNotification();
+    } catch (err) {
+      errorNotification();
+      Alert.alert(t('common.error'), err.message || t('pdfExport.exportFailed'));
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleExportMileagePDF = async () => {
+    setExporting('mileage');
+    try {
+      await exportMileagePDF(trips, language, selectedYear);
+      successNotification();
+    } catch (err) {
+      errorNotification();
+      Alert.alert(t('common.error'), err.message || t('pdfExport.exportFailed'));
+    } finally {
+      setExporting(null);
     }
   };
 
@@ -206,7 +253,53 @@ export default function TaxSummaryScreen() {
             <Text style={[styles.grandTotalValue, { color: colors.white }]}>{curr(summary.totals.totalDeductions)}</Text>
           </View>
 
-          {/* Share Button */}
+          {/* PDF Export Buttons */}
+          <View style={styles.section}>
+            <Text style={[styles.exportSectionTitle, { color: colors.primary }]}>
+              {t('pdfExport.title')}
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.exportButton, { backgroundColor: colors.primary }]}
+              onPress={handleExportTaxPDF}
+              disabled={exporting !== null}
+              accessibilityLabel={t('pdfExport.exportTaxSummary')}
+            >
+              {exporting === 'tax' ? (
+                <ActivityIndicator color={colors.white} size="small" />
+              ) : (
+                <Text style={[styles.exportButtonText, { color: colors.white }]}>📄 {t('pdfExport.exportTaxSummary')}</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.exportButton, { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }]}
+              onPress={handleExportReceiptsPDF}
+              disabled={exporting !== null}
+              accessibilityLabel={t('pdfExport.exportReceipts')}
+            >
+              {exporting === 'receipts' ? (
+                <ActivityIndicator color={colors.primary} size="small" />
+              ) : (
+                <Text style={[styles.exportButtonText, { color: colors.primary }]}>🧾 {t('pdfExport.exportReceipts')}</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.exportButton, { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 }]}
+              onPress={handleExportMileagePDF}
+              disabled={exporting !== null}
+              accessibilityLabel={t('pdfExport.exportMileage')}
+            >
+              {exporting === 'mileage' ? (
+                <ActivityIndicator color={colors.primary} size="small" />
+              ) : (
+                <Text style={[styles.exportButtonText, { color: colors.primary }]}>🚗 {t('pdfExport.exportMileage')}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* Share Text Report */}
           <TouchableOpacity
             style={[styles.shareButton, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={handleShare}
@@ -302,6 +395,23 @@ const styles = StyleSheet.create({
   },
   grandTotalLabel: { fontSize: FONT_SIZES.lg, fontWeight: FONT_WEIGHTS.bold },
   grandTotalValue: { fontSize: FONT_SIZES.xxl, fontWeight: FONT_WEIGHTS.bold },
+  exportSectionTitle: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: FONT_WEIGHTS.bold,
+    marginBottom: SPACING.sm,
+  },
+  exportButton: {
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
+    marginBottom: SPACING.sm,
+    alignItems: 'center',
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  exportButtonText: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: FONT_WEIGHTS.semibold,
+  },
   shareButton: {
     borderWidth: 1,
     borderRadius: BORDER_RADIUS.md,

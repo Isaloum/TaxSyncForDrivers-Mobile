@@ -195,6 +195,16 @@ const translations = {
       footer: 'This report is for informational purposes only. Consult a tax professional for filing.',
     },
 
+    // PDF Export
+    pdfExport: {
+      title: 'Export PDF Reports',
+      exportTaxSummary: 'Export Tax Summary (PDF)',
+      exportReceipts: 'Export Receipt List (PDF)',
+      exportMileage: 'Export Mileage Log (PDF)',
+      exportFailed: 'Failed to generate PDF. Please try again.',
+      generating: 'Generating PDF...',
+    },
+
     // OCR / Camera Scan
     ocr: {
       requestingPermission: 'Requesting camera permission...',
@@ -418,6 +428,16 @@ const translations = {
       totalDeductions: 'Total des d\u00E9ductions',
       shareReport: 'Partager le rapport fiscal',
       footer: 'Ce rapport est fourni \u00E0 titre informatif seulement. Consultez un professionnel de l\u2019imp\u00F4t pour la d\u00E9claration.',
+    },
+
+    // PDF Export
+    pdfExport: {
+      title: 'Exporter les rapports PDF',
+      exportTaxSummary: 'Exporter le r\u00E9sum\u00E9 fiscal (PDF)',
+      exportReceipts: 'Exporter la liste des re\u00E7us (PDF)',
+      exportMileage: 'Exporter le journal de kilom\u00E9trage (PDF)',
+      exportFailed: '\u00C9chec de la g\u00E9n\u00E9ration du PDF. Veuillez r\u00E9essayer.',
+      generating: 'G\u00E9n\u00E9ration du PDF...',
     },
 
     // OCR / Camera Scan
