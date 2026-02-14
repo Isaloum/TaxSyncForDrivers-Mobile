@@ -26,27 +26,29 @@ export default function ReceiptAddScreen({ navigation, route }) {
   const editMode = route.params?.editMode || false;
   const existing = route.params?.receipt || null;
   const capturedPhotoUri = route.params?.capturedPhotoUri || null;
+  const ocrData = route.params?.ocrData || null;
 
   const [amount, setAmount] = useState(
-    editMode ? String(existing.expense.amount) : ''
+    editMode ? String(existing.expense.amount) : ocrData?.amount || ''
   );
   const [date, setDate] = useState(
-    editMode ? existing.expense.date : new Date().toISOString().split('T')[0]
+    editMode ? existing.expense.date : ocrData?.date || new Date().toISOString().split('T')[0]
   );
   const [vendor, setVendor] = useState(
-    editMode ? existing.expense.vendor : ''
+    editMode ? existing.expense.vendor : ocrData?.vendor || ''
   );
   const [category, setCategory] = useState(
-    editMode ? existing.expense.category : 'fuel'
+    editMode ? existing.expense.category : ocrData?.category || 'fuel'
   );
   const [description, setDescription] = useState(
-    editMode ? existing.expense.description : ''
+    editMode ? existing.expense.description : ocrData?.description || ''
   );
   const [photoUri, setPhotoUri] = useState(
     editMode ? existing.metadata?.photoUri || null : capturedPhotoUri
   );
   const [errors, setErrors] = useState([]);
   const [saving, setSaving] = useState(false);
+  const ocrConfidence = ocrData?.confidence || 0;
 
   const onSave = async () => {
     const receiptData = { amount, date, vendor, category, description };
@@ -90,6 +92,17 @@ export default function ReceiptAddScreen({ navigation, route }) {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        {ocrConfidence > 0 && (
+          <View style={[styles.ocrBanner, { backgroundColor: ocrConfidence >= 60 ? '#ecfdf5' : '#fef3c7', borderColor: ocrConfidence >= 60 ? '#10b981' : '#f59e0b' }]}>
+            <Text style={[styles.ocrBannerTitle, { color: ocrConfidence >= 60 ? '#065f46' : '#92400e' }]}>
+              🔍 {t('ocr.autoFilled')}
+            </Text>
+            <Text style={[styles.ocrBannerText, { color: ocrConfidence >= 60 ? '#047857' : '#b45309' }]}>
+              {t('ocr.confidence')}: {ocrConfidence}% — {t('ocr.reviewFields')}
+            </Text>
+          </View>
+        )}
+
         {errors.length > 0 && (
           <View style={[styles.errorBox, { backgroundColor: colors.dangerLight, borderColor: colors.danger }]}>
             {errors.map((e, i) => (
@@ -212,6 +225,20 @@ const styles = StyleSheet.create({
   },
   removePhotoText: {
     fontSize: FONT_SIZES.sm,
+  },
+  ocrBanner: {
+    borderWidth: 1,
+    borderRadius: BORDER_RADIUS.sm,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+  },
+  ocrBannerTitle: {
+    fontWeight: FONT_WEIGHTS.bold,
+    fontSize: FONT_SIZES.sm,
+    marginBottom: 2,
+  },
+  ocrBannerText: {
+    fontSize: FONT_SIZES.xs,
   },
   errorBox: {
     borderWidth: 1,
