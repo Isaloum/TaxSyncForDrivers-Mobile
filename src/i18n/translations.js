@@ -205,6 +205,29 @@ const translations = {
       generating: 'Generating PDF...',
     },
 
+    // CSV Import
+    csvImport: {
+      title: 'Import CSV',
+      subtitle: 'Import trip and earnings data from Uber, Lyft, or any CSV file.',
+      importButton: 'Import Uber/Lyft CSV',
+      selectFile: 'Select CSV File',
+      preview: 'Import Preview',
+      confirmImport: 'Confirm Import',
+      cancel: 'Cancel',
+      supportedPlatforms: 'Supported Platforms',
+      uberDesc: 'Trip history & earnings export',
+      lyftDesc: 'Ride history & earnings export',
+      genericDesc: 'Any CSV with date, distance, amount columns',
+      noDataFound: 'No valid trip or earnings data found in this CSV file.',
+      parseFailed: 'Could not read the CSV file. Please check the format.',
+      importSuccess: 'Imported {{trips}} trips and {{receipts}} earnings records.',
+      importFailed: 'Failed to import data. Please try again.',
+      howToExport: 'How to Export Your Data',
+      uberInstructions: 'Uber: Go to drivers.uber.com \u2192 Tax Information \u2192 Download Tax Summary CSV.',
+      lyftInstructions: 'Lyft: Go to account.lyft.com \u2192 Tax Information \u2192 Download ride history.',
+      footer: 'Distances are converted from miles to km. All imported trips are marked as business trips.',
+    },
+
     // OCR / Camera Scan
     ocr: {
       requestingPermission: 'Requesting camera permission...',
@@ -438,6 +461,29 @@ const translations = {
       exportMileage: 'Exporter le journal de kilom\u00E9trage (PDF)',
       exportFailed: '\u00C9chec de la g\u00E9n\u00E9ration du PDF. Veuillez r\u00E9essayer.',
       generating: 'G\u00E9n\u00E9ration du PDF...',
+    },
+
+    // CSV Import
+    csvImport: {
+      title: 'Importer un CSV',
+      subtitle: 'Importez les donn\u00E9es de trajets et revenus depuis Uber, Lyft ou tout fichier CSV.',
+      importButton: 'Importer CSV Uber/Lyft',
+      selectFile: 'S\u00E9lectionner un fichier CSV',
+      preview: 'Aper\u00E7u de l\u2019importation',
+      confirmImport: 'Confirmer l\u2019importation',
+      cancel: 'Annuler',
+      supportedPlatforms: 'Plateformes prises en charge',
+      uberDesc: 'Historique des trajets et revenus',
+      lyftDesc: 'Historique des courses et revenus',
+      genericDesc: 'Tout CSV avec colonnes date, distance, montant',
+      noDataFound: 'Aucune donn\u00E9e valide de trajet ou de revenu trouv\u00E9e dans ce fichier CSV.',
+      parseFailed: 'Impossible de lire le fichier CSV. V\u00E9rifiez le format.',
+      importSuccess: '{{trips}} trajets et {{receipts}} enregistrements de revenus import\u00E9s.',
+      importFailed: '\u00C9chec de l\u2019importation. Veuillez r\u00E9essayer.',
+      howToExport: 'Comment exporter vos donn\u00E9es',
+      uberInstructions: 'Uber\u00A0: Allez sur drivers.uber.com \u2192 Informations fiscales \u2192 T\u00E9l\u00E9charger le CSV.',
+      lyftInstructions: 'Lyft\u00A0: Allez sur account.lyft.com \u2192 Informations fiscales \u2192 T\u00E9l\u00E9charger l\u2019historique.',
+      footer: 'Les distances sont converties de milles en km. Tous les trajets import\u00E9s sont marqu\u00E9s comme trajets d\u2019affaires.',
     },
 
     // OCR / Camera Scan
