@@ -174,6 +174,25 @@ const translations = {
       noResultsHint: 'Try a different search or filter.',
     },
 
+    // OCR / Camera Scan
+    ocr: {
+      requestingPermission: 'Requesting camera permission...',
+      cameraRequired: 'Camera access is required to scan receipts.',
+      enablePermission: 'Please enable camera permissions in your device settings.',
+      goBack: 'Go Back',
+      positionReceipt: 'Position receipt within the frame',
+      autoExtract: 'Auto-extract amount, date & vendor',
+      capturePhoto: 'Capture photo',
+      retake: 'Retake',
+      scanAndExtract: 'Scan & Extract',
+      manualEntry: 'Manual',
+      scanning: 'Scanning receipt...',
+      scanFailed: 'Failed to scan receipt. Please enter details manually.',
+      autoFilled: 'Auto-filled from scan',
+      confidence: 'Confidence',
+      reviewFields: 'Please review all fields before saving',
+    },
+
     // Common
     common: {
       error: 'Error',
@@ -357,6 +376,25 @@ const translations = {
       trips: 'trajets',
       noResults: 'Aucun r\u00E9sultat',
       noResultsHint: 'Essayez une autre recherche ou un autre filtre.',
+    },
+
+    // OCR / Camera Scan
+    ocr: {
+      requestingPermission: 'Demande de permission de la cam\u00E9ra...',
+      cameraRequired: 'L\u2019acc\u00E8s \u00E0 la cam\u00E9ra est requis pour num\u00E9riser les re\u00E7us.',
+      enablePermission: 'Veuillez activer les permissions de la cam\u00E9ra dans les param\u00E8tres de votre appareil.',
+      goBack: 'Retour',
+      positionReceipt: 'Positionnez le re\u00E7u dans le cadre',
+      autoExtract: 'Extraction automatique du montant, de la date et du fournisseur',
+      capturePhoto: 'Prendre une photo',
+      retake: 'Reprendre',
+      scanAndExtract: 'Num\u00E9riser',
+      manualEntry: 'Manuel',
+      scanning: 'Num\u00E9risation du re\u00E7u...',
+      scanFailed: '\u00C9chec de la num\u00E9risation. Veuillez entrer les d\u00E9tails manuellement.',
+      autoFilled: 'Rempli automatiquement par la num\u00E9risation',
+      confidence: 'Confiance',
+      reviewFields: 'Veuillez v\u00E9rifier tous les champs avant d\u2019enregistrer',
     },
 
     // Common
